@@ -1,0 +1,562 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed":"#2f1500","primary-container":"#008378","surface-bright":"#f8f9ff","secondary":"#904d00","surface-container-highest":"#d3e4fe","on-tertiary-fixed-variant":"#3a485b","inverse-surface":"#213145","surface-container-lowest":"#ffffff","outline":"#6d7a77","inverse-primary":"#6bd8cb","on-secondary":"#ffffff","surface":"#f8f9ff","on-secondary-container":"#663500","on-tertiary":"#ffffff","surface-container":"#e5eeff","on-primary-container":"#f4fffc","tertiary-fixed-dim":"#b9c7df","tertiary-fixed":"#d5e3fc","on-surface":"#0b1c30","on-tertiary-container":"#fdfcff","surface-container-high":"#dce9ff","surface-tint":"#006a61","on-background":"#0b1c30","background":"#f8f9ff","on-surface-variant":"#3d4947","secondary-fixed":"#ffdcc3","on-tertiary-fixed":"#0d1c2e","outline-variant":"#bcc9c6","tertiary":"#4f5d71","secondary-fixed-dim":"#ffb77d","on-primary-fixed-variant":"#005049","secondary-container":"#fe932c","on-error-container":"#93000a","tertiary-container":"#67758b","error":"#ba1a1a","primary-fixed":"#89f5e7","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","on-error":"#ffffff","inverse-on-surface":"#eaf1ff","primary-fixed-dim":"#6bd8cb","error-container":"#ffdad6","on-primary-fixed":"#00201d","on-secondary-fixed-variant":"#6e3900","surface-container-low":"#eff4ff","on-primary":"#ffffff","primary":"#00685f"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-lg":"1.5rem","space-sm":"0.5rem","margin-desktop":"2.5rem","space-md":"1rem","gutter":"1rem","space-xs":"0.25rem","gutter-desktop":"1.5rem","margin":"1rem","space-xl":"2rem"},fontFamily:{"label-md":["Inter"],"headline-xl-mobile":["Inter"],"headline-md":["Inter"],"label-sm":["Inter"],"body-lg":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"stat-streak":["Inter"],"headline-xl":["Inter"]},fontSize:{"label-md":["13px",{lineHeight:"18px",letterSpacing:"0.01em",fontWeight:"500"}],"headline-xl-mobile":["28px",{lineHeight:"34px",letterSpacing:"-0.02em",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.015em",fontWeight:"600"}],"label-sm":["11px",{lineHeight:"16px",letterSpacing:"0.04em",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",letterSpacing:"0em",fontWeight:"400"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",letterSpacing:"0em",fontWeight:"400"}],"stat-streak":["14px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"700"}],"headline-xl":["36px",{lineHeight:"44px",letterSpacing:"-0.025em",fontWeight:"600"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-space-lg px-space-md"><div class="flex flex-col gap-space-lg"><div class="flex items-center gap-space-sm px-space-xs"><img alt="Brand logo. - Primary color: #0d9488 - Font: inter - Mode: light - Roundness: rounded-md" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wp7PuYCFr6zcHjmW0lc6W_ZIg_5xOyfseG94z9UtzIuqIGULvk2UkhcqTEDS1t4xiVmpem47jldpcx2zlTnyHsRWJcrKG4-snMt6t0xe3he5KwYDyJCy61ZpwDzScEYgTAxVsPBzq3KvHWCa59nmRMfSm_784wqdvQfbjRhq_D3sJv-vFqzuWhFVQE_h3AjaWf30f9kUXEW9zGr3vZZR6EsuVagM3iHDuRUsReyw8LWEE_UXZ0XXikLw"><div class="flex flex-col"><span class="font-headline-md text-headline-md tracking-tight text-on-surface leading-none">VibeHabit</span><span class="font-label-sm text-label-sm text-outline mt-space-xs">Calm Rituals</span></div></div><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-primary-fixed/30 w-fit"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span><span class="font-label-sm text-label-sm text-primary tracking-wide">Tersinkron</span></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-headline-md shadow-sm"><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="hari-ini" href="#"><span class="material-symbols-outlined text-[20px]">today</span><span class="font-label-md text-label-md">Hari Ini</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl transition-all bg-structure-blue text-white font-headline-md shadow-sm" data-path="analitik" href="#"><span class="material-symbols-outlined text-[20px]">bar_chart</span><span class="font-label-md text-label-md font-semibold">Analitik</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="kelola-habit" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-label-md text-label-md">Kelola Habit</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="data-dan-sinkronisasi" href="#"><span class="material-symbols-outlined text-[20px]">sync_saved_locally</span><span class="font-label-md text-label-md">Data &amp; Sinkronisasi</span></a></nav></div><div class="flex flex-col gap-space-md pt-space-md bg-surface-container-lowest"><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant"><span class="material-symbols-outlined text-[16px] text-primary">database</span><span class="font-label-sm text-label-sm truncate">IndexedDB • Lokal Aman</span></div><div class="flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-label-md text-label-md text-on-surface leading-tight">Disiplin Hening</span><span class="font-label-sm text-label-sm text-outline">Mode Pribadi</span></div></div><a class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="pengaturan" href="#" title="Pengaturan"><span class="material-symbols-outlined text-[20px]">settings</span></a></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-margin-desktop"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-outline font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">spa</span><span class="text-on-surface">VibeHabit Ruang Fokus</span></div></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">calendar_today</span><span class="">Kamis, 24 Oktober</span></div><button class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-accent-orange hover:bg-accent-orange-dark text-on-primary font-label-md text-label-md shadow-sm hover:opacity-95 active:scale-[0.985] transition-all" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span class="">Tambah Habit</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-surface min-h-screen w-full px-margin-desktop pb-space-xl"><div class="flex flex-col w-full">
+<div class="flex flex-col gap-space-lg w-full max-w-[1040px] mx-auto pb-space-xl">
+<!-- Top Filter Bar & Time Controls -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pt-space-xs">
+<div>
+<div class="flex items-center gap-space-xs text-outline font-label-sm text-label-sm uppercase tracking-wider">
+<span class="">Evaluasi Ketenangan</span>
+<span class="">•</span>
+<span class="text-primary font-semibold">September 2026</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mt-0.5">Analisis &amp; Konsistensi Ritual</h1>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Segmented Control -->
+<div class="flex items-center p-1 bg-surface-container rounded-xl"><button class="px-3 py-1.5 rounded-lg text-text-secondary font-label-md text-label-md hover:text-text-main transition-all" type="button">Mingguan</button>
+<button class="px-3 py-1.5 rounded-lg bg-base-card text-structure-blue-dark font-semibold font-label-md text-label-md shadow-sm" type="button">Bulanan</button>
+<button class="px-3 py-1.5 rounded-lg text-text-secondary font-label-md text-label-md hover:text-text-main transition-all" type="button">Tahunan</button></div>
+<!-- Month Navigation -->
+<div class="flex items-center bg-surface-container-lowest px-2 py-1 rounded-xl shadow-sm">
+<button aria-label="Bulan sebelumnya" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary rounded-lg hover:bg-surface-container transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<span class="px-2 font-label-md text-label-md text-on-surface font-semibold select-none">September 2026</span>
+<button aria-label="Bulan berikutnya" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary rounded-lg hover:bg-surface-container transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+<!-- Export Action -->
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded-xl bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-all shadow-sm font-label-md text-label-md" type="button">
+<span class="material-symbols-outlined text-[18px]">ios_share</span>
+<span class="hidden md:inline">Ekspor Data</span>
+</button>
+</div>
+</div>
+<!-- Top Key Metrics Cards (4 Metrics) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md"><!-- Metric 1: Rasio Keberhasilan (Sage Green for Success) -->
+<div class="flex flex-col justify-between p-space-md bg-base-card rounded-xl shadow-sm border border-border-subtle relative overflow-hidden">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">Rasio Keberhasilan</span>
+<span class="flex items-center text-[11px] font-semibold text-structure-green-dark bg-structure-green/15 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[13px] mr-0.5">arrow_upward</span> +4.2%
+</span>
+</div>
+<div class="flex items-baseline gap-space-xs my-space-xs">
+<span class="font-headline-xl text-headline-xl text-text-main font-bold tracking-tight">78%</span>
+<span class="font-label-sm text-label-sm text-text-secondary">vs 73.8% Ags</span>
+</div>
+<!-- Sparkline SVG Sage Green -->
+<div class="w-full h-8 pt-1">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 24">
+<path d="M0,18 Q15,16 28,19 T55,10 T80,8 L100,5" fill="none" stroke="#10B981" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M0,18 Q15,16 28,19 T55,10 T80,8 L100,5 L100,24 L0,24 Z" fill="#10B981" fill-opacity="0.12"></path>
+</svg>
+</div>
+</div>
+<!-- Metric 2: Streak Terpanjang (Amber #F59E0B) -->
+<div class="flex flex-col justify-between p-space-md bg-base-card rounded-xl shadow-sm border border-border-subtle">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">Streak Terpanjang</span>
+<span class="w-6 h-6 rounded-full bg-accent-amber/20 flex items-center justify-center text-accent-amber">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</span>
+</div>
+<div class="flex items-baseline gap-space-xs my-space-xs">
+<span class="font-headline-xl text-headline-xl text-text-main font-bold tracking-tight">21</span>
+<span class="font-label-md text-label-md text-text-main font-semibold">Hari</span>
+</div>
+<div class="flex items-center gap-space-xs text-text-secondary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-amber"></span>
+<span class="truncate">Review Flashcard Kosakata</span>
+</div>
+</div>
+<!-- Metric 3: Hari Aktif (Calm Blue #0EA5E9) -->
+<div class="flex flex-col justify-between p-space-md bg-base-card rounded-xl shadow-sm border border-border-subtle">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">Hari Aktif</span>
+<span class="material-symbols-outlined text-[18px] text-structure-blue">calendar_month</span>
+</div>
+<div class="flex items-baseline gap-space-xs my-space-xs">
+<span class="font-headline-xl text-headline-xl text-text-main font-bold tracking-tight">24</span>
+<span class="font-label-md text-label-md text-text-secondary">/ 30 Hari</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-structure-blue h-full rounded-full" style="width: 80%;"></div>
+</div>
+</div>
+<!-- Metric 4: Total Sesi Fokus (Calm Blue / Structure) -->
+<div class="flex flex-col justify-between p-space-md bg-base-card rounded-xl shadow-sm border border-border-subtle">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">Total Sesi Fokus</span>
+<span class="material-symbols-outlined text-[18px] text-structure-blue">timelapse</span>
+</div>
+<div class="flex items-baseline gap-space-xs my-space-xs">
+<span class="font-headline-xl text-headline-xl text-text-main font-bold tracking-tight">114</span>
+<span class="font-label-md text-label-md text-text-main font-semibold">Sesi</span>
+</div>
+<div class="flex items-center justify-between text-text-secondary font-label-sm text-label-sm">
+<span class="">62 jam kumulatif</span>
+<span class="text-structure-blue-dark font-medium">~2.1 jam/hari</span>
+</div>
+</div></div>
+<!-- 2-Column Responsive Dashboard Layout (60% / 40%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- Left / Main Column (7 of 12 = ~60%) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Daily Success Trend Chart Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div>
+<h2 class="font-headline-md text-headline-md text-text-main">Tren Keberhasilan Harian</h2>
+<p class="font-body-md text-body-md text-text-secondary">Fluktuasi penyelesaian ritual harian sepanjang September</p>
+</div>
+<div class="flex items-center gap-space-md font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-structure-blue inline-block"></span>
+<span class="text-text-main font-medium">Realisasi</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 bg-outline-variant inline-block"></span>
+<span class="text-text-secondary">Target (78%)</span>
+</div>
+</div>
+</div>
+<!-- Interactive SVG Line Visualisation with Calm Blue (#0EA5E9) -->
+<div class="relative w-full h-56 pt-2">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 540 180">
+<defs>
+<linearGradient id="primaryAreaGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#0EA5E9" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<!-- Grid Horizontal Guide Lines -->
+<line stroke="#E2E8F0" stroke-width="1" x1="0" x2="540" y1="20" y2="20"></line>
+<line stroke="#E2E8F0" stroke-width="1" x1="0" x2="540" y1="65" y2="65"></line>
+<line stroke="#E2E8F0" stroke-width="1" x1="0" x2="540" y1="110" y2="110"></line>
+<line stroke="#E2E8F0" stroke-width="1" x1="0" x2="540" y1="155" y2="155"></line>
+<!-- Target Benchmark Line (78%) -->
+<line stroke="#94A3B8" stroke-dasharray="4 4" stroke-width="1.5" x1="0" x2="540" y1="60" y2="60"></line>
+<text fill="#64748B" font-family="Plus Jakarta Sans, sans-serif" font-size="9" font-weight="600" x="470" y="55">Rata-rata 78%</text>
+<!-- Smooth Area Gradient -->
+<path d="M0,130 C30,120 45,95 75,70 C105,45 130,55 160,35 C190,15 210,50 240,40 C270,30 290,85 320,60 C350,35 380,45 410,25 C440,5 470,30 500,20 C520,15 530,22 540,18 L540,165 L0,165 Z" fill="url(#primaryAreaGrad)"></path>
+<!-- Trend Curved Line in Calm Blue -->
+<path d="M0,130 C30,120 45,95 75,70 C105,45 130,55 160,35 C190,15 210,50 240,40 C270,30 290,85 320,60 C350,35 380,45 410,25 C440,5 470,30 500,20 C520,15 530,22 540,18" fill="none" stroke="#0EA5E9" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Highlighted Data Points -->
+<circle cx="160" cy="35" fill="#ffffff" r="4.5" stroke="#0EA5E9" stroke-width="2.5"></circle>
+<circle cx="240" cy="40" fill="#ffffff" r="4" stroke="#0EA5E9" stroke-width="2"></circle>
+<circle cx="410" cy="25" fill="#0EA5E9" r="5" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="500" cy="20" fill="#ffffff" r="4" stroke="#0EA5E9" stroke-width="2"></circle>
+</svg>
+<!-- X Axis Days Indicator -->
+<div class="flex justify-between items-center text-text-secondary font-label-sm text-label-sm pt-2">
+<span class="">01 Sep</span>
+<span class="">06 Sep</span>
+<span class="">12 Sep</span>
+<span class="">18 Sep</span>
+<span class="">24 Sep</span>
+<span class="">30 Sep</span>
+</div>
+</div></div>
+<!-- Monthly Density Matrix / Habit Heatmap -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div>
+<h2 class="font-headline-md text-headline-md text-text-main">Peta Densitas Konsistensi</h2>
+<p class="font-body-md text-body-md text-text-secondary">Frekuensi penyelesaian kebiasaan per hari kalender</p>
+</div>
+<!-- Heatmap Legend -->
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-text-secondary">
+<span class="">Rendah</span>
+<span class="w-3 h-3 rounded bg-slate-200" title="Rehat / Kosong"></span>
+<span class="w-3 h-3 rounded bg-sky-200" title="1-2 ritual (Sky/Blue)"></span>
+<span class="w-3 h-3 rounded bg-structure-blue" title="3-4 ritual (Calm Blue)"></span>
+<span class="w-3 h-3 rounded bg-structure-green" title="5/5 Sempurna (Sage Green)"></span>
+<span class="">Tinggi</span>
+</div>
+</div>
+<!-- Weekday Labels -->
+<div class="grid grid-cols-7 gap-1.5 text-center text-text-secondary font-label-sm text-label-sm py-1">
+<span class="">Sen</span>
+<span class="">Sel</span>
+<span class="">Rab</span>
+<span class="">Kam</span>
+<span class="">Jum</span>
+<span class="">Sab</span>
+<span class="">Min</span>
+</div>
+<!-- Matrix Grid for September -->
+<div class="grid grid-cols-7 gap-2">
+<!-- Empty offset slot for Monday prior -->
+<div class="h-10 rounded-lg bg-slate-100 border border-dashed border-border-subtle flex items-center justify-center text-slate-400 text-label-sm">31</div>
+<!-- Days 01 - 30 -->
+<div class="group relative h-10 rounded-lg bg-sky-200 hover:ring-2 hover:ring-structure-blue flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-slate-800 font-medium">1</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">1 Sep: 2 Ritual</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-blue text-white hover:ring-2 hover:ring-structure-blue-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">2</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">2 Sep: 4 Ritual</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">3</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">3 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">4</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">4 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-blue text-white hover:ring-2 hover:ring-structure-blue-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">5</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">5 Sep: 4 Ritual</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-200 hover:ring-2 hover:ring-slate-400 flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-slate-500 font-medium">6</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">6 Sep: Rehat</span>
+</div>
+<!-- Week 2 -->
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">7</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">7 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">8</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">8 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-blue text-white hover:ring-2 hover:ring-structure-blue-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">9</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">9 Sep: 4 Ritual</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">10</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">10 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">11</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">11 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-sky-200 hover:ring-2 hover:ring-structure-blue flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-slate-800 font-medium">12</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">12 Sep: 2 Ritual</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-200 hover:ring-2 hover:ring-slate-400 flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-slate-500 font-medium">13</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">13 Sep: Rehat</span>
+</div>
+<!-- Week 3 -->
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">14</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">14 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">15</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">15 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">16</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">16 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-blue text-white hover:ring-2 hover:ring-structure-blue-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">17</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">17 Sep: 4 Ritual</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">18</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">18 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-sky-200 hover:ring-2 hover:ring-structure-blue flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-slate-800 font-medium">19</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">19 Sep: 2 Ritual</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-200 hover:ring-2 hover:ring-slate-400 flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-slate-500 font-medium">20</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">20 Sep: Rehat</span>
+</div>
+<!-- Week 4 -->
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">21</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">21 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">22</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">22 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">23</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">23 Sep: Sempurna (5/5)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-structure-green text-white hover:ring-2 hover:ring-structure-green-dark flex flex-col items-center justify-center cursor-pointer transition-all">
+<span class="font-label-sm text-label-sm text-white font-medium">24</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">24 Sep: Sempurna (Hari ini)</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-100 hover:ring-2 hover:ring-slate-300 flex flex-col items-center justify-center cursor-pointer transition-all opacity-60">
+<span class="font-label-sm text-label-sm text-slate-400 font-medium">25</span>
+<span class="hidden group-hover:block absolute bottom-full mb-1 px-2 py-1 bg-inverse-surface text-inverse-on-surface rounded text-[11px] whitespace-nowrap z-20 shadow-md">25 Sep: Belum Berjalan</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-100 hover:ring-2 hover:ring-slate-300 flex flex-col items-center justify-center cursor-pointer transition-all opacity-60">
+<span class="font-label-sm text-label-sm text-slate-400 font-medium">26</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-100 hover:ring-2 hover:ring-slate-300 flex flex-col items-center justify-center cursor-pointer transition-all opacity-60">
+<span class="font-label-sm text-label-sm text-slate-400 font-medium">27</span>
+</div>
+<!-- Week 5 -->
+<div class="group relative h-10 rounded-lg bg-slate-100 hover:ring-2 hover:ring-slate-300 flex flex-col items-center justify-center cursor-pointer transition-all opacity-60">
+<span class="font-label-sm text-label-sm text-slate-400 font-medium">28</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-100 hover:ring-2 hover:ring-slate-300 flex flex-col items-center justify-center cursor-pointer transition-all opacity-60">
+<span class="font-label-sm text-label-sm text-slate-400 font-medium">29</span>
+</div>
+<div class="group relative h-10 rounded-lg bg-slate-100 hover:ring-2 hover:ring-slate-300 flex flex-col items-center justify-center cursor-pointer transition-all opacity-60">
+<span class="font-label-sm text-label-sm text-slate-400 font-medium">30</span>
+</div>
+<div class="h-10 rounded-lg bg-slate-100/50 border border-dashed border-border-subtle flex items-center justify-center text-slate-400 text-label-sm">1</div>
+<div class="h-10 rounded-lg bg-slate-100/50 border border-dashed border-border-subtle flex items-center justify-center text-slate-400 text-label-sm">2</div>
+<div class="h-10 rounded-lg bg-slate-100/50 border border-dashed border-border-subtle flex items-center justify-center text-slate-400 text-label-sm">3</div>
+<div class="h-10 rounded-lg bg-slate-100/50 border border-dashed border-border-subtle flex items-center justify-center text-slate-400 text-label-sm">4</div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-border-subtle text-text-secondary font-label-sm text-label-sm">
+<span class="">Disiplin puncak terdeteksi di hari <strong class="text-text-main">Senin &amp; Selasa</strong></span>
+<span class="text-structure-green-dark font-semibold">92% Ketepatan</span>
+</div></div>
+</div>
+<!-- Right Column (5 of 12 = ~40%) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- Pillar Balance / Donut Chart Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md"><div>
+<h2 class="font-headline-md text-headline-md text-text-main">Keseimbangan Pilar Disiplin</h2>
+<p class="font-body-md text-body-md text-text-secondary">Distribusi energi &amp; fokus kebiasaan</p>
+</div>
+<div class="flex items-center justify-center gap-space-lg py-2">
+<!-- Donut SVG -->
+<div class="relative w-36 h-36 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+<!-- Track -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#F1F5F9" stroke-width="12"></circle>
+<!-- Kesehatan (35% -> stroke-dasharray 83.5 155.5) - Sage Green (#10B981) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#10B981" stroke-dasharray="83.5 155.5" stroke-dashoffset="0" stroke-linecap="round" stroke-width="12"></circle>
+<!-- Kognisi & Ilmu (25% -> 59.7) - Calm Blue (#0EA5E9) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#0EA5E9" stroke-dasharray="59.7 179.3" stroke-dashoffset="-85" stroke-linecap="round" stroke-width="12"></circle>
+<!-- Karya & Fokus (20% -> 47.7) - Slate Navy (#475569) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#475569" stroke-dasharray="47.7 191.3" stroke-dashoffset="-146" stroke-linecap="round" stroke-width="12"></circle>
+<!-- Hening & Jiwa (20% -> 47.7) - Soft Sky (#38BDF8) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#38BDF8" stroke-dasharray="47.7 191.3" stroke-dashoffset="-195" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute flex flex-col items-center justify-center text-center">
+<span class="font-label-sm text-label-sm text-text-secondary uppercase">Dominan</span>
+<span class="font-headline-md text-headline-md text-structure-green-dark font-bold leading-none">Sehat</span>
+</div>
+</div>
+<!-- Legend Badges -->
+<div class="flex flex-col gap-2 flex-1">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-structure-green"></span>
+<span class="text-text-main">Kesehatan</span>
+</div>
+<span class="font-bold text-text-main">35%</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-structure-blue"></span>
+<span class="text-text-main">Kognisi &amp; Ilmu</span>
+</div>
+<span class="font-bold text-text-main">25%</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+<span class="text-text-main">Karya &amp; Fokus</span>
+</div>
+<span class="font-bold text-text-main">20%</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+<span class="text-text-main">Hening &amp; Jiwa</span>
+</div>
+<span class="font-bold text-text-main">20%</span>
+</div>
+</div>
+</div></div>
+<!-- Habits Consistency Leaderboard Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-on-surface">Peringkat Kebiasaan</h2>
+<label class="flex items-center gap-1.5 cursor-pointer text-outline font-label-sm text-label-sm select-none">
+<input class="accent-primary rounded w-3.5 h-3.5" id="archiveToggle" type="checkbox">
+<span class="">Arsip</span>
+</label>
+</div>
+<div class="flex flex-col gap-space-md" id="habitRankingList"><!-- Habit Item 1 -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-md bg-structure-green/15 text-structure-green-dark font-bold text-[11px] flex items-center justify-center">1</span>
+<span class="font-label-md text-label-md text-text-main font-semibold truncate max-w-[160px]">Minum Air 2 Liter</span>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-accent-amber font-stat-streak flex items-center gap-0.5 border border-amber-200/50">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span> 14
+</span>
+<span class="font-bold text-structure-green-dark">96%</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-structure-green h-full rounded-full transition-all duration-500" style="width: 96%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-text-secondary">
+<span class="">Terbaik: 28 hari</span>
+<span class="">Kesehatan</span>
+</div>
+</div>
+<!-- Habit Item 2 -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-md bg-structure-blue/15 text-structure-blue-dark font-bold text-[11px] flex items-center justify-center">2</span>
+<span class="font-label-md text-label-md text-text-main font-semibold truncate max-w-[160px]">Review Flashcard</span>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-accent-amber font-stat-streak flex items-center gap-0.5 border border-amber-200/50">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span> 21
+</span>
+<span class="font-bold text-structure-blue-dark">90%</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-structure-blue h-full rounded-full transition-all duration-500" style="width: 90%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-text-secondary">
+<span class="">Terbaik: 21 hari (Rekor baru)</span>
+<span class="">Kognisi</span>
+</div>
+</div>
+<!-- Habit Item 3 -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-md bg-slate-100 text-slate-700 font-bold text-[11px] flex items-center justify-center">3</span>
+<span class="font-label-md text-label-md text-text-main font-semibold truncate max-w-[160px]">Membaca Non-Fiksi</span>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-accent-amber font-stat-streak flex items-center gap-0.5 border border-amber-200/50">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span> 9
+</span>
+<span class="font-bold text-text-main">85%</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-structure-blue h-full rounded-full transition-all duration-500" style="width: 85%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-text-secondary">
+<span class="">Terbaik: 14 hari</span>
+<span class="">Belajar</span>
+</div>
+</div>
+<!-- Habit Item 4 -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-md bg-slate-100 text-slate-700 font-bold text-[11px] flex items-center justify-center">4</span>
+<span class="font-label-md text-label-md text-text-main font-semibold truncate max-w-[160px]">Deep Work: 90 Menit</span>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="px-1.5 py-0.5 rounded bg-amber-50 text-accent-amber font-stat-streak flex items-center gap-0.5 border border-amber-200/50">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span> 4
+</span>
+<span class="font-bold text-text-main">78%</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-slate-600 h-full rounded-full transition-all duration-500" style="width: 78%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-text-secondary">
+<span class="">Terbaik: 12 hari</span>
+<span class="">Fokus</span>
+</div>
+</div>
+<!-- Habit Item 5 -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-md bg-slate-100 text-slate-700 font-bold text-[11px] flex items-center justify-center">5</span>
+<span class="font-label-md text-label-md text-text-main font-semibold truncate max-w-[160px]">Tidur Sebelum 23:00</span>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="px-1.5 py-0.5 rounded bg-slate-100 text-text-secondary font-stat-streak flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">local_fire_department</span> 5
+</span>
+<span class="font-bold text-text-secondary">68%</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-slate-400 h-full rounded-full transition-all duration-500" style="width: 68%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-text-secondary">
+<span class="">Terbaik: 9 hari</span>
+<span class="">Kesehatan</span>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<!-- Bottom Zen Insight Banner -->
+<div class="flex flex-col md:flex-row items-center justify-between gap-space-md p-space-md bg-surface-container-low rounded-xl text-on-surface">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed/40 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[22px]">lightbulb</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Refleksi Ketenangan</span>
+<p class="font-body-md text-body-md text-on-surface-variant leading-snug">
+            Kemajuan sejati tidak membutuhkan ketergesaan. Ritme terbaik Anda konsisten tercapai pada jendela pagi hari <strong>(07:00 – 10:00)</strong>. Pertahankan jeda hening ini.
+          </p>
+</div>
+</div>
+<button class="px-space-md py-2 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-primary font-label-md text-label-md transition-all shadow-sm shrink-0" type="button">
+        Pelajari Pola Waktu
+      </button>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    // Dynamic Filter Interaction Simulation
+    const archiveToggle = document.getElementById('archiveToggle');
+    const rankingList = document.getElementById('habitRankingList');
+
+    if (archiveToggle && rankingList) {
+      archiveToggle.addEventListener('change', function(e) {
+        if (e.target.checked) {
+          const archivedEl = document.createElement('div');
+          archivedEl.id = 'archivedItem';
+          archivedEl.className = 'flex flex-col gap-1.5 opacity-60';
+          archivedEl.innerHTML = `
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-md bg-surface-container text-outline font-bold text-[11px] flex items-center justify-center">6</span>
+                <span class="font-label-md text-label-md text-outline truncate max-w-[160px]">Lari Pagi 5K (Diarsipkan)</span>
+              </div>
+              <div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+                <span class="font-bold text-outline">54%</span>
+              </div>
+            </div>
+            <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+              <div class="bg-outline-variant h-full rounded-full" style="width: 54%;"></div>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-outline">
+              <span>Arsip: 14 Ags</span>
+              <span>Kebugaran</span>
+            </div>
+          `;
+          rankingList.appendChild(archivedEl);
+        } else {
+          const archivedEl = document.getElementById('archivedItem');
+          if (archivedEl) archivedEl.remove();
+        }
+      });
+    }
+  })();
+</script></main></div>
+
+</body></html>

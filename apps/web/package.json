@@ -1,0 +1,14 @@
+{
+  "name": "@vibehabit/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vibehabit/shared": "*"
+  }
+}

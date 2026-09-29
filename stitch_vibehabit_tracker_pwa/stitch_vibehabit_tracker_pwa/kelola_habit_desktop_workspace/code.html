@@ -1,0 +1,730 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed":"#2f1500","primary-container":"#008378","surface-bright":"#f8f9ff","secondary":"#904d00","surface-container-highest":"#d3e4fe","on-tertiary-fixed-variant":"#3a485b","inverse-surface":"#213145","surface-container-lowest":"#ffffff","outline":"#6d7a77","inverse-primary":"#6bd8cb","on-secondary":"#ffffff","surface":"#f8f9ff","on-secondary-container":"#663500","on-tertiary":"#ffffff","surface-container":"#e5eeff","on-primary-container":"#f4fffc","tertiary-fixed-dim":"#b9c7df","tertiary-fixed":"#d5e3fc","on-surface":"#0b1c30","on-tertiary-container":"#fdfcff","surface-container-high":"#dce9ff","surface-tint":"#006a61","on-background":"#0b1c30","background":"#f8f9ff","on-surface-variant":"#3d4947","secondary-fixed":"#ffdcc3","on-tertiary-fixed":"#0d1c2e","outline-variant":"#bcc9c6","tertiary":"#4f5d71","secondary-fixed-dim":"#ffb77d","on-primary-fixed-variant":"#005049","secondary-container":"#fe932c","on-error-container":"#93000a","tertiary-container":"#67758b","error":"#ba1a1a","primary-fixed":"#89f5e7","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","on-error":"#ffffff","inverse-on-surface":"#eaf1ff","primary-fixed-dim":"#6bd8cb","error-container":"#ffdad6","on-primary-fixed":"#00201d","on-secondary-fixed-variant":"#6e3900","surface-container-low":"#eff4ff","on-primary":"#ffffff","primary":"#00685f"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-lg":"1.5rem","space-sm":"0.5rem","margin-desktop":"2.5rem","space-md":"1rem","gutter":"1rem","space-xs":"0.25rem","gutter-desktop":"1.5rem","margin":"1rem","space-xl":"2rem"},fontFamily:{"label-md":["Inter"],"headline-xl-mobile":["Inter"],"headline-md":["Inter"],"label-sm":["Inter"],"body-lg":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"stat-streak":["Inter"],"headline-xl":["Inter"]},fontSize:{"label-md":["13px",{lineHeight:"18px",letterSpacing:"0.01em",fontWeight:"500"}],"headline-xl-mobile":["28px",{lineHeight:"34px",letterSpacing:"-0.02em",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.015em",fontWeight:"600"}],"label-sm":["11px",{lineHeight:"16px",letterSpacing:"0.04em",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",letterSpacing:"0em",fontWeight:"400"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",letterSpacing:"0em",fontWeight:"400"}],"stat-streak":["14px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"700"}],"headline-xl":["36px",{lineHeight:"44px",letterSpacing:"-0.025em",fontWeight:"600"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-space-lg px-space-md"><div class="flex flex-col gap-space-lg"><div class="flex items-center gap-space-sm px-space-xs"><img alt="Brand logo. - Primary color: #0d9488 - Font: inter - Mode: light - Roundness: rounded-md" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wp7PuYCFr6zcHjmW0lc6W_ZIg_5xOyfseG94z9UtzIuqIGULvk2UkhcqTEDS1t4xiVmpem47jldpcx2zlTnyHsRWJcrKG4-snMt6t0xe3he5KwYDyJCy61ZpwDzScEYgTAxVsPBzq3KvHWCa59nmRMfSm_784wqdvQfbjRhq_D3sJv-vFqzuWhFVQE_h3AjaWf30f9kUXEW9zGr3vZZR6EsuVagM3iHDuRUsReyw8LWEE_UXZ0XXikLw"><div class="flex flex-col"><span class="font-headline-md text-headline-md tracking-tight text-on-surface leading-none">VibeHabit</span><span class="font-label-sm text-label-sm text-outline mt-space-xs">Calm Rituals</span></div></div><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-primary-fixed/30 w-fit"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span><span class="font-label-sm text-label-sm text-primary tracking-wide">Tersinkron</span></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-headline-md shadow-sm"><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="hari-ini" href="#"><span class="material-symbols-outlined text-[20px]">today</span><span class="font-label-md text-label-md">Hari Ini</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="analitik" href="#"><span class="material-symbols-outlined text-[20px]">bar_chart</span><span class="font-label-md text-label-md">Analitik</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl transition-all bg-primary-container text-on-primary-container font-headline-md shadow-sm" data-path="kelola-habit" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-label-md text-label-md">Kelola Habit</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="data-dan-sinkronisasi" href="#"><span class="material-symbols-outlined text-[20px]">sync_saved_locally</span><span class="font-label-md text-label-md">Data &amp; Sinkronisasi</span></a></nav></div><div class="flex flex-col gap-space-md pt-space-md bg-surface-container-lowest"><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant"><span class="material-symbols-outlined text-[16px] text-primary">database</span><span class="font-label-sm text-label-sm truncate">IndexedDB • Lokal Aman</span></div><div class="flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-label-md text-label-md text-on-surface leading-tight">Disiplin Hening</span><span class="font-label-sm text-label-sm text-outline">Mode Pribadi</span></div></div><a class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="pengaturan" href="#" title="Pengaturan"><span class="material-symbols-outlined text-[20px]">settings</span></a></div></div></aside><div class="pl-[260px]"><header class="fixed top-0 left-[260px] right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-margin-desktop"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-outline font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">spa</span><span class="text-on-surface">VibeHabit Ruang Fokus</span></div></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">calendar_today</span><span class="">Kamis, 24 Oktober</span></div><button class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-accent-orange text-white font-label-md text-label-md shadow-sm hover:opacity-95 active:scale-[0.985] transition-all" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span class="">Tambah Habit</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-surface min-h-screen w-full px-margin-desktop pb-space-xl"><div class="flex flex-col w-full">
+<div class="w-full max-w-[1280px] mx-auto py-space-lg flex flex-col gap-space-lg">
+<!-- Top Action & Filter Bar -->
+<div class="flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Kelola Kebiasaan</h1>
+<p class="font-body-md text-body-md text-outline mt-space-xs">Tata arsitektur ritual harian, frekuensi pelaksanaan, dan batas kuantitatif.</p>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="relative flex-1 md:w-72">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline">search</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface-container-lowest rounded-xl font-body-md text-body-md text-on-surface placeholder:text-outline/70 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all" id="habit-search" placeholder="Cari nama kebiasaan..." type="text">
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-xl bg-accent-orange text-white font-label-md text-label-md shadow-sm hover:opacity-95 active:scale-[0.985] transition-all" onclick="openDrawer('Tambah Kebiasaan Baru')" type="button"><span class="material-symbols-outlined text-[18px]">add_circle</span><span class="">Kebiasaan Baru</span></button>
+</div>
+</div>
+<!-- Segmented Controls & Category Filter Row -->
+<div class="flex flex-wrap items-center justify-between gap-space-md pt-space-xs">
+<div class="flex items-center gap-space-xs overflow-x-auto pb-1 max-w-full">
+<button class="filter-category-btn px-space-sm py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-all shadow-sm" type="button">Semua (6)</button>
+<button class="filter-category-btn px-space-sm py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-all" type="button">Kesehatan (2)</button>
+<button class="filter-category-btn px-space-sm py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-all" type="button">Belajar (2)</button>
+<button class="filter-category-btn px-space-sm py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-all" type="button">Karir (1)</button>
+<button class="filter-category-btn px-space-sm py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-all" type="button">Ibadah (1)</button>
+</div>
+<div class="flex items-center p-1 bg-surface-container rounded-xl shadow-inner">
+<button class="px-space-md py-1 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm font-semibold" type="button">Aktif (6)</button>
+<button class="px-space-md py-1 rounded-lg text-tertiary hover:text-on-surface font-label-md text-label-md transition-colors" onclick="toggleArchiveSection()" type="button">Diarsipkan (2)</button>
+</div>
+</div>
+</div>
+<!-- Main Content Layout (Table Grid + Embedded/Inspectable Drawer State) -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg items-start">
+<!-- Table Section -->
+<div class="xl:col-span-8 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0_1px_3px_rgba(15,23,42,0.04)] overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-outline font-label-sm text-label-sm tracking-wider uppercase">
+<th class="py-3.5 px-space-md font-semibold">Nama &amp; Kategori</th>
+<th class="py-3.5 px-space-sm font-semibold">Mode Target</th>
+<th class="py-3.5 px-space-sm font-semibold">Jadwal</th>
+<th class="py-3.5 px-space-sm font-semibold">Performa</th>
+<th class="py-3.5 px-space-sm font-semibold text-center">Status</th>
+<th class="py-3.5 px-space-md font-semibold text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-xl bg-emerald-50 text-structure-green flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[20px]">water_drop</span></div><div class="flex flex-col min-w-0"><span class="font-body-lg text-body-lg text-on-surface font-medium truncate">Minum Air 2 Liter</span><div class="flex items-center gap-1.5 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-structure-green inline-block"></span><span class="font-label-sm text-label-sm text-outline">Kesehatan</span></div></div></div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high/40 px-2.5 py-1 rounded-lg">
+<span class="material-symbols-outlined text-[15px] text-primary">equalizer</span>
+                      2000 ml / hari
+                    </span>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="font-body-md text-body-md text-on-surface">Setiap hari</span>
+<span class="block font-label-sm text-label-sm text-outline">07:00 WIB</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-stat-streak text-stat-streak"><span class="material-symbols-outlined text-[14px] text-accent-amber">local_fire_department</span>18 hr</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">92%</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm text-center">
+<button aria-label="Toggle habit" class="w-11 h-6 bg-primary rounded-full relative p-0.5 transition-colors focus:outline-none" onclick="toggleHabitStatus(this)" type="button">
+<span class="block w-5 h-5 bg-surface-container-lowest rounded-full shadow-sm transform translate-x-5 transition-transform"></span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-1 text-outline">
+<button class="p-1.5 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" onclick="editHabit('Minum Air 2 Liter', 'Kesehatan', 'Kuantitatif', '2000', 'ml')" title="Edit" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:text-tertiary hover:bg-surface-container rounded-lg transition-colors" onclick="archiveHabit(this)" title="Arsipkan" type="button">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+<button class="p-1.5 hover:text-error hover:bg-error-container/30 rounded-lg transition-colors" onclick="deleteHabit(this)" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-xl bg-emerald-50 text-structure-green flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-[20px]">bedtime</span></div><div class="flex flex-col min-w-0"><span class="font-body-lg text-body-lg text-on-surface font-medium truncate">Tidur Sebelum Jam 23:00</span><div class="flex items-center gap-1.5 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-structure-green inline-block"></span><span class="font-label-sm text-label-sm text-outline">Kesehatan</span></div></div></div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high/40 px-2.5 py-1 rounded-lg">
+<span class="material-symbols-outlined text-[15px] text-tertiary">check_box</span>
+                      Checklist (Biner)
+                    </span>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="font-body-md text-body-md text-on-surface">Setiap hari</span>
+<span class="block font-label-sm text-label-sm text-outline">22:30 WIB</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-stat-streak text-stat-streak"><span class="material-symbols-outlined text-[14px] text-accent-amber">local_fire_department</span>14 hr</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">88%</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm text-center">
+<button aria-label="Toggle habit" class="w-11 h-6 bg-primary rounded-full relative p-0.5 transition-colors focus:outline-none" onclick="toggleHabitStatus(this)" type="button">
+<span class="block w-5 h-5 bg-surface-container-lowest rounded-full shadow-sm transform translate-x-5 transition-transform"></span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-1 text-outline">
+<button class="p-1.5 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" onclick="editHabit('Tidur Sebelum Jam 23:00', 'Kesehatan', 'Checklist')" title="Edit" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:text-tertiary hover:bg-surface-container rounded-lg transition-colors" onclick="archiveHabit(this)" title="Arsipkan" type="button">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+<button class="p-1.5 hover:text-error hover:bg-error-container/30 rounded-lg transition-colors" onclick="deleteHabit(this)" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 (Highlighted row currently open in right form) -->
+<tr class="bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-secondary-fixed/50 text-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-body-lg text-body-lg text-on-surface font-semibold truncate">Membaca Buku Non-Fiksi</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse" title="Sedang diedit"></span>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container inline-block"></span>
+<span class="font-label-sm text-label-sm text-outline">Belajar</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-lg">
+<span class="material-symbols-outlined text-[15px] text-primary">timer</span>
+                      30 Menit / Hari
+                    </span>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="font-body-md text-body-md text-on-surface font-medium">Sen, Rab, Jum</span>
+<span class="block font-label-sm text-label-sm text-outline">08:00 WIB</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-stat-streak text-stat-streak"><span class="material-symbols-outlined text-[14px] text-accent-amber">local_fire_department</span>21 hr</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">96%</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm text-center">
+<button aria-label="Toggle habit" class="w-11 h-6 bg-primary rounded-full relative p-0.5 transition-colors focus:outline-none" onclick="toggleHabitStatus(this)" type="button">
+<span class="block w-5 h-5 bg-surface-container-lowest rounded-full shadow-sm transform translate-x-5 transition-transform"></span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-1 text-primary">
+<button class="p-1.5 bg-surface-container-lowest rounded-lg shadow-sm" onclick="editHabit('Membaca Buku Non-Fiksi', 'Belajar', 'Kuantitatif', '30', 'Menit')" title="Edit" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 text-outline hover:text-tertiary hover:bg-surface-container rounded-lg transition-colors" onclick="archiveHabit(this)" title="Arsipkan" type="button">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+<button class="p-1.5 text-outline hover:text-error hover:bg-error-container/30 rounded-lg transition-colors" onclick="deleteHabit(this)" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-secondary-fixed/50 text-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">style</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-lg text-body-lg text-on-surface font-medium truncate">Review Flashcard Kosakata</span>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container inline-block"></span>
+<span class="font-label-sm text-label-sm text-outline">Belajar</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high/40 px-2.5 py-1 rounded-lg">
+<span class="material-symbols-outlined text-[15px] text-primary">pin</span>
+                      25 Kartu / Hari
+                    </span>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="font-body-md text-body-md text-on-surface">5x per minggu</span>
+<span class="block font-label-sm text-label-sm text-outline">12:30 WIB</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-outline font-stat-streak text-stat-streak">
+<span class="material-symbols-outlined text-[14px]">local_fire_department</span>
+                        5 hr
+                      </div>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">68%</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm text-center">
+<button aria-label="Toggle habit" class="w-11 h-6 bg-primary rounded-full relative p-0.5 transition-colors focus:outline-none" onclick="toggleHabitStatus(this)" type="button">
+<span class="block w-5 h-5 bg-surface-container-lowest rounded-full shadow-sm transform translate-x-5 transition-transform"></span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-1 text-outline">
+<button class="p-1.5 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" onclick="editHabit('Review Flashcard Kosakata', 'Belajar', 'Kuantitatif', '25', 'Kartu')" title="Edit" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:text-tertiary hover:bg-surface-container rounded-lg transition-colors" onclick="archiveHabit(this)" title="Arsipkan" type="button">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+<button class="p-1.5 hover:text-error hover:bg-error-container/30 rounded-lg transition-colors" onclick="deleteHabit(this)" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-tertiary-fixed/60 text-tertiary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">laptop_mac</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-lg text-body-lg text-on-surface font-medium truncate">Deep Work: 90 Menit</span>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary inline-block"></span>
+<span class="font-label-sm text-label-sm text-outline">Karir</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high/40 px-2.5 py-1 rounded-lg">
+<span class="material-symbols-outlined text-[15px] text-primary">timer</span>
+                      90 Menit / Hari
+                    </span>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="font-body-md text-body-md text-on-surface">Sen, Sel, Rab, Kam, Jum</span>
+<span class="block font-label-sm text-label-sm text-outline">09:00 WIB</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-stat-streak text-stat-streak"><span class="material-symbols-outlined text-[14px] text-accent-amber">local_fire_department</span>11 hr</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">84%</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm text-center">
+<button aria-label="Toggle habit" class="w-11 h-6 bg-primary rounded-full relative p-0.5 transition-colors focus:outline-none" onclick="toggleHabitStatus(this)" type="button">
+<span class="block w-5 h-5 bg-surface-container-lowest rounded-full shadow-sm transform translate-x-5 transition-transform"></span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-1 text-outline">
+<button class="p-1.5 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" onclick="editHabit('Deep Work: 90 Menit', 'Karir', 'Kuantitatif', '90', 'Menit')" title="Edit" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:text-tertiary hover:bg-surface-container rounded-lg transition-colors" onclick="archiveHabit(this)" title="Arsipkan" type="button">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+<button class="p-1.5 hover:text-error hover:bg-error-container/30 rounded-lg transition-colors" onclick="deleteHabit(this)" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed/40 text-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">self_improvement</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-lg text-body-lg text-on-surface font-medium truncate">Meditasi Refleksi</span>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container inline-block"></span>
+<span class="font-label-sm text-label-sm text-outline">Ibadah</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant bg-surface-container-high/40 px-2.5 py-1 rounded-lg">
+<span class="material-symbols-outlined text-[15px] text-tertiary">check_box</span>
+                      Checklist (Biner)
+                    </span>
+</td>
+<td class="py-space-md px-space-sm">
+<span class="font-body-md text-body-md text-on-surface">Setiap hari</span>
+<span class="block font-label-sm text-label-sm text-outline">21:00 WIB</span>
+</td>
+<td class="py-space-md px-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-stat-streak text-stat-streak"><span class="material-symbols-outlined text-[14px] text-accent-amber">local_fire_department</span>30 hr</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">100%</span>
+</div>
+</td>
+<td class="py-space-md px-space-sm text-center">
+<button aria-label="Toggle habit" class="w-11 h-6 bg-primary rounded-full relative p-0.5 transition-colors focus:outline-none" onclick="toggleHabitStatus(this)" type="button">
+<span class="block w-5 h-5 bg-surface-container-lowest rounded-full shadow-sm transform translate-x-5 transition-transform"></span>
+</button>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-1 text-outline">
+<button class="p-1.5 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" onclick="editHabit('Meditasi Refleksi', 'Ibadah', 'Checklist')" title="Edit" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 hover:text-tertiary hover:bg-surface-container rounded-lg transition-colors" onclick="archiveHabit(this)" title="Arsipkan" type="button">
+<span class="material-symbols-outlined text-[18px]">archive</span>
+</button>
+<button class="p-1.5 hover:text-error hover:bg-error-container/30 rounded-lg transition-colors" onclick="deleteHabit(this)" title="Hapus" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Archival Collapsible Section -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-[0_1px_3px_rgba(15,23,42,0.04)] overflow-hidden">
+<button class="w-full flex items-center justify-between p-space-md text-left hover:bg-surface-container-low transition-colors" onclick="toggleArchiveSection()" type="button">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline text-[20px]">inventory_2</span>
+<span class="font-headline-md text-headline-md text-on-surface">Kebiasaan Diarsipkan (2)</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-semibold">Non-aktif</span>
+</div>
+<span class="material-symbols-outlined text-outline transition-transform duration-300" id="archive-arrow">expand_more</span>
+</button>
+<div class="hidden divide-y-0 p-space-md pt-0 flex flex-col gap-space-sm" id="archive-content">
+<div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline">fitness_center</span>
+<div>
+<span class="font-body-md text-body-md text-on-surface font-medium line-through opacity-70">Lari Pagi 30 Menit</span>
+<span class="block font-label-sm text-label-sm text-outline">Kesehatan • Dihentikan sementara</span>
+</div>
+</div>
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-lowest text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary shadow-sm transition-all" onclick="restoreHabit(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">unarchive</span>
+                Pulihkan
+              </button>
+</div>
+<div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline">coffee</span>
+<div>
+<span class="font-body-md text-body-md text-on-surface font-medium line-through opacity-70">Maksimal 1 Cangkir Kopi</span>
+<span class="block font-label-sm text-label-sm text-outline">Nutrisi • Tercapai target</span>
+</div>
+</div>
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-lowest text-primary font-label-md text-label-md hover:bg-primary hover:text-on-primary shadow-sm transition-all" onclick="restoreHabit(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">unarchive</span>
+                Pulihkan
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Configuration Panel (Add/Edit Drawer Desktop View) -->
+<div class="xl:col-span-4 bg-surface-container-lowest rounded-2xl shadow-[0_4px_20px_rgba(15,23,42,0.06)] p-space-lg flex flex-col gap-space-md sticky top-20" id="side-drawer">
+<!-- Drawer Header -->
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed/40 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface" id="drawer-title">Konfigurasi Habit</h2>
+<span class="font-label-sm text-label-sm text-outline">Ubah parameter ritual</span>
+</div>
+</div>
+<button class="p-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors" onclick="resetFormToNew()" title="Batal / Baru" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Form Body -->
+<form class="flex flex-col gap-space-md" id="habit-form" onsubmit="event.preventDefault(); saveHabit();">
+<!-- Field: Nama Habit -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-semibold" for="habit-name-input">Nama Habit</label>
+<div class="relative">
+<input class="w-full px-3.5 py-2.5 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all" id="habit-name-input" type="text" value="Membaca Buku Non-Fiksi">
+</div>
+</div>
+<!-- Field: Kategori -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface font-semibold" for="category-select">Kategori</label>
+<button class="font-label-sm text-label-sm text-primary hover:underline flex items-center gap-0.5" onclick="addNewCategoryPrompt()" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span> Tambah Kategori
+              </button>
+</div>
+<select class="w-full px-3 py-2.5 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all cursor-pointer" id="category-select">
+<option selected="" value="Belajar">Belajar</option>
+<option value="Kesehatan">Kesehatan</option>
+<option value="Karir">Karir</option>
+<option value="Ibadah">Ibadah</option>
+<option value="Keuangan">Keuangan</option>
+</select>
+</div>
+<!-- Field: Mode Target Segmented Control -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-semibold">Mode Target</label>
+<div class="grid grid-cols-2 p-1 bg-surface-container rounded-xl shadow-inner text-center">
+<button class="py-2 rounded-lg font-label-md text-label-md text-tertiary transition-all" id="mode-checklist" onclick="setTargetMode('checklist')" type="button">
+                Checklist (Ya/Tidak)
+              </button>
+<button class="py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md font-semibold shadow-sm transition-all" id="mode-quantitative" onclick="setTargetMode('quantitative')" type="button">
+                Kuantitatif
+              </button>
+</div>
+</div>
+<!-- Quantitative Input Block (Conditional display) -->
+<div class="flex flex-col gap-space-xs p-space-sm rounded-xl bg-surface-container-low/70" id="quantitative-fields">
+<span class="font-label-sm text-label-sm text-outline font-medium">Batas / Sasaran Kuantitatif</span>
+<div class="grid grid-cols-2 gap-space-sm">
+<div>
+<label class="font-label-sm text-label-sm text-tertiary" for="target-value">Target Angka</label>
+<input class="w-full mt-1 px-3 py-2 bg-surface-container-lowest rounded-lg font-stat-streak text-stat-streak text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30" id="target-value" type="number" value="30">
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-tertiary" for="target-unit">Satuan</label>
+<select class="w-full mt-1 px-3 py-2 bg-surface-container-lowest rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30" id="target-unit">
+<option selected="" value="Menit">Menit</option>
+<option value="Halaman">Halaman</option>
+<option value="ml">Mililiter (ml)</option>
+<option value="Kali">Kali</option>
+<option value="Jam">Jam</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Field: Frekuensi Segmented Control -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-semibold">Frekuensi</label>
+<div class="grid grid-cols-3 p-1 bg-surface-container rounded-xl shadow-inner text-center text-xs">
+<button class="freq-btn py-1.5 rounded-lg text-tertiary font-label-md text-label-md" onclick="setFrequencyMode(this, 'all')" type="button">Setiap Hari</button>
+<button class="freq-btn py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-semibold shadow-sm font-label-md text-label-md" onclick="setFrequencyMode(this, 'days')" type="button">Hari Tertentu</button>
+<button class="freq-btn py-1.5 rounded-lg text-tertiary font-label-md text-label-md" onclick="setFrequencyMode(this, 'interval')" type="button">X Kali/Mgg</button>
+</div>
+</div>
+<!-- Day Selection Chips -->
+<div class="flex flex-col gap-space-xs" id="day-selector-container">
+<span class="font-label-sm text-label-sm text-outline">Pilih Hari Aktif</span>
+<div class="grid grid-cols-7 gap-1">
+<button class="day-chip h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold transition-all" onclick="toggleDayChip(this)" type="button">Sen</button>
+<button class="day-chip h-9 rounded-lg bg-surface-container text-tertiary font-label-sm text-label-sm font-medium transition-all" onclick="toggleDayChip(this)" type="button">Sel</button>
+<button class="day-chip h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold transition-all" onclick="toggleDayChip(this)" type="button">Rab</button>
+<button class="day-chip h-9 rounded-lg bg-surface-container text-tertiary font-label-sm text-label-sm font-medium transition-all" onclick="toggleDayChip(this)" type="button">Kam</button>
+<button class="day-chip h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold transition-all" onclick="toggleDayChip(this)" type="button">Jum</button>
+<button class="day-chip h-9 rounded-lg bg-surface-container text-tertiary font-label-sm text-label-sm font-medium transition-all" onclick="toggleDayChip(this)" type="button">Sab</button>
+<button class="day-chip h-9 rounded-lg bg-surface-container text-tertiary font-label-sm text-label-sm font-medium transition-all" onclick="toggleDayChip(this)" type="button">Min</button>
+</div>
+</div>
+<!-- Field: Waktu Pengingat -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface font-semibold" for="reminder-time">Waktu Pengingat</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline">notifications</span>
+<input class="w-full pl-9 pr-3 py-2.5 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40" id="reminder-time" type="time" value="08:00">
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex items-center gap-space-sm pt-space-sm">
+<button class="flex-1 py-2.5 rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors text-center" onclick="resetFormToNew()" type="button">
+              Batal
+            </button>
+<button class="flex-1 py-2.5 rounded-xl bg-accent-orange text-white hover:opacity-95 active:scale-[0.985] font-label-md text-label-md font-semibold shadow-sm transition-all text-center" type="submit">Simpan Perubahan</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Notification Toast (Default Hidden) -->
+<div class="fixed bottom-6 right-6 hidden items-center gap-space-sm px-space-md py-3 rounded-xl bg-inverse-surface text-inverse-on-surface shadow-xl z-50 transition-all" id="toast-notification">
+<span class="material-symbols-outlined text-inverse-primary text-[20px]">check_circle</span>
+<span class="font-body-md text-body-md" id="toast-text">Perubahan habit berhasil disimpan.</span>
+<button class="ml-2 text-outline-variant hover:text-inverse-on-surface" onclick="hideToast()" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  function setTargetMode(mode) {
+    const checklistBtn = document.getElementById('mode-checklist');
+    const quantBtn = document.getElementById('mode-quantitative');
+    const quantFields = document.getElementById('quantitative-fields');
+    
+    if (mode === 'checklist') {
+      checklistBtn.className = 'py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md font-semibold shadow-sm transition-all';
+      quantBtn.className = 'py-2 rounded-lg text-tertiary font-label-md text-label-md transition-all';
+      quantFields.classList.add('hidden');
+    } else {
+      quantBtn.className = 'py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md font-semibold shadow-sm transition-all';
+      checklistBtn.className = 'py-2 rounded-lg text-tertiary font-label-md text-label-md transition-all';
+      quantFields.classList.remove('hidden');
+    }
+  }
+
+  function toggleDayChip(button) {
+    if (button.classList.contains('bg-primary')) {
+      button.className = 'day-chip h-9 rounded-lg bg-surface-container text-tertiary font-label-sm text-label-sm font-medium transition-all';
+    } else {
+      button.className = 'day-chip h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold transition-all';
+    }
+  }
+
+  function setFrequencyMode(btn, mode) {
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.freq-btn').forEach(b => {
+      b.className = 'freq-btn py-1.5 rounded-lg text-tertiary font-label-md text-label-md';
+    });
+    btn.className = 'freq-btn py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-semibold shadow-sm font-label-md text-label-md';
+    
+    const daySelector = document.getElementById('day-selector-container');
+    if (mode === 'days') {
+      daySelector.classList.remove('hidden');
+    } else {
+      daySelector.classList.add('hidden');
+    }
+  }
+
+  function toggleArchiveSection() {
+    const content = document.getElementById('archive-content');
+    const arrow = document.getElementById('archive-arrow');
+    if (content.classList.contains('hidden')) {
+      content.classList.remove('hidden');
+      arrow.textContent = 'expand_less';
+    } else {
+      content.classList.add('hidden');
+      arrow.textContent = 'expand_more';
+    }
+  }
+
+  function toggleHabitStatus(btn) {
+    const knob = btn.firstElementChild;
+    const isChecked = knob.classList.contains('translate-x-5');
+    if (isChecked) {
+      knob.classList.remove('translate-x-5');
+      knob.classList.add('translate-x-0.5');
+      btn.classList.remove('bg-primary');
+      btn.classList.add('bg-surface-container-high');
+      showToast('Kebiasaan dinonaktifkan.');
+    } else {
+      knob.classList.remove('translate-x-0.5');
+      knob.classList.add('translate-x-5');
+      btn.classList.remove('bg-surface-container-high');
+      btn.classList.add('bg-primary');
+      showToast('Kebiasaan diaktifkan kembali.');
+    }
+  }
+
+  function editHabit(name, category, mode, value, unit) {
+    document.getElementById('drawer-title').textContent = 'Ubah Habit: ' + name;
+    document.getElementById('habit-name-input').value = name;
+    
+    const categorySelect = document.getElementById('category-select');
+    for (let i = 0; i < categorySelect.options.length; i++) {
+      if (categorySelect.options[i].value === category) {
+        categorySelect.selectedIndex = i;
+        break;
+      }
+    }
+
+    if (mode === 'Checklist') {
+      setTargetMode('checklist');
+    } else {
+      setTargetMode('quantitative');
+      if (value) document.getElementById('target-value').value = value;
+      if (unit) {
+        const unitSelect = document.getElementById('target-unit');
+        for (let i = 0; i < unitSelect.options.length; i++) {
+          if (unitSelect.options[i].value.toLowerCase() === unit.toLowerCase()) {
+            unitSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Memuat konfigurasi untuk: ' + name);
+  }
+
+  function openDrawer(title) {
+    document.getElementById('drawer-title').textContent = title;
+    document.getElementById('habit-name-input').value = '';
+    document.getElementById('habit-name-input').focus();
+    setTargetMode('checklist');
+  }
+
+  function resetFormToNew() {
+    document.getElementById('drawer-title').textContent = 'Buat Kebiasaan Baru';
+    document.getElementById('habit-name-input').value = '';
+    document.getElementById('category-select').selectedIndex = 0;
+    setTargetMode('checklist');
+    showToast('Formulir direset.');
+  }
+
+  function addNewCategoryPrompt() {
+    const newCat = prompt('Masukkan nama kategori baru:');
+    if (newCat && newCat.trim() !== '') {
+      const select = document.getElementById('category-select');
+      const opt = document.createElement('option');
+      opt.value = newCat.trim();
+      opt.textContent = newCat.trim();
+      opt.selected = true;
+      select.appendChild(opt);
+      showToast('Kategori "' + newCat.trim() + '" ditambahkan.');
+    }
+  }
+
+  function archiveHabit(btn) {
+    const row = btn.closest('tr');
+    if (row) {
+      row.style.opacity = '0.4';
+      setTimeout(() => {
+        row.remove();
+        showToast('Kebiasaan dipindahkan ke arsip.');
+      }, 300);
+    }
+  }
+
+  function deleteHabit(btn) {
+    if (confirm('Apakah Anda yakin ingin menghapus kebiasaan ini secara permanen? Catatan historis akan tetap tersimpan di arsip lokal.')) {
+      const row = btn.closest('tr');
+      if (row) {
+        row.remove();
+        showToast('Kebiasaan telah dihapus.');
+      }
+    }
+  }
+
+  function restoreHabit(btn) {
+    const item = btn.closest('div');
+    if (item) {
+      item.remove();
+      showToast('Kebiasaan berhasil dipulihkan ke daftar aktif.');
+    }
+  }
+
+  function saveHabit() {
+    const name = document.getElementById('habit-name-input').value;
+    if (!name.trim()) {
+      alert('Silakan isi nama kebiasaan terlebih dahulu.');
+      return;
+    }
+    showToast('Habit "' + name + '" berhasil disimpan.');
+  }
+
+  let toastTimer = null;
+  function showToast(message) {
+    const toast = document.getElementById('toast-notification');
+    const text = document.getElementById('toast-text');
+    text.textContent = message;
+    toast.classList.remove('hidden');
+    toast.classList.add('flex');
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      hideToast();
+    }, 3500);
+  }
+
+  function hideToast() {
+    const toast = document.getElementById('toast-notification');
+    toast.classList.add('hidden');
+    toast.classList.remove('flex');
+  }
+
+  // Live filter search for rows
+  document.getElementById('habit-search').addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(term) ? '' : 'none';
+    });
+  });
+
+  // Filter category buttons
+  document.querySelectorAll('.filter-category-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-category-btn').forEach(b => {
+        b.className = 'filter-category-btn px-space-sm py-1.5 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-all';
+      });
+      this.className = 'filter-category-btn px-space-sm py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md transition-all shadow-sm';
+      
+      const catText = this.innerText.split(' ')[0].toLowerCase();
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        if (catText === 'semua') {
+          row.style.display = '';
+        } else {
+          row.style.display = row.innerText.toLowerCase().includes(catText) ? '' : 'none';
+        }
+      });
+    });
+  });
+</script></main></div>
+
+</body></html>
