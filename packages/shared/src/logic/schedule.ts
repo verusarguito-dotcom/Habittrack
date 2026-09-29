@@ -78,10 +78,10 @@ export function isDaySuccessful(
 
   if (habit.mode === 'quantitative') {
     const target = schedule.target ?? 1;
-    if (log.nilai !== null && log.nilai !== undefined && log.nilai >= target) {
-      return true;
+    if (log.nilai !== null && log.nilai !== undefined) {
+      return log.nilai >= target;
     }
-    return !!log.selesai;
+    return false;
   }
 
   return false;

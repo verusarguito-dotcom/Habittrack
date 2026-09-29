@@ -13,9 +13,9 @@ export const isoTimestampSchema = z.string().refine((val) => !isNaN(Date.parse(v
 export const baseSyncableEntitySchema = z.object({
   id: uuidSchema,
   updated_at: isoTimestampSchema,
-  deleted_at: isoTimestampSchema.nullable(),
+  deleted_at: isoTimestampSchema.nullable().default(null),
   device_id: z.string().min(1),
-  server_seq: z.number().int().nonnegative().optional().nullable()
+  server_seq: z.number().int().nonnegative().optional().nullable().default(null)
 });
 
 export const syncTableSchema = z.enum([

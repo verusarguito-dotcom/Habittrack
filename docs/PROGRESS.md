@@ -70,3 +70,19 @@ Catat entri baru pada berkas ini setiap kali:
 - **Deviation from plan (if any):** Tidak ada deviasi. Seluruh kriteria Definition of Done (DoD) terpenuhi.
 - **Upstream doc update needed?** Tidak ada.
 
+### 2026-09-29 — Milestone 1 Audit & Hardening (Phase 1 Refinement)
+- **What was done:**
+  - Melakukan review adversial menyeluruh terhadap fondasi Phase 1 (Milestone 1, T001–T004) dan menemukan 6 celah kritis dan ketahanan yang langsung diperbaiki:
+    1. **Kepatuhan PRD 7.2 pada Habit Kuantitatif:** Memperbaiki `isDaySuccessful` di mana sebelumnya nilai parsial (`nilai < target`) yang memiliki `selesai: true` keliru dinyatakan berhasil karena fall-through ke `return !!log.selesai`. Diperketat sehingga habit kuantitatif strictly mewajibkan `log.nilai >= target`.
+    2. **Isolasi Multi-Habit pada Jadwal:** Memperbaiki `calculateStreak` dan `calculateSuccessRatio` yang sebelumnya tidak memfilter array `schedules` berdasarkan `habit_id`, sehingga jadwal habit lain dengan `effective_from` lebih baru dapat mencemari evaluasi streak/rasio habit target.
+    3. **Ketahanan Waktu (Timezone Drift):** Mengamankan `getEffectiveDate` saat menerima string tanggal lokal murni (`YYYY-MM-DD`) dengan parsing lokal eksplisit, mencegah mesin JavaScript menginterpretasikannya sebagai UTC midnight yang berpotensi memundurkan tanggal 1 hari di zona waktu barat (UTC negative).
+    4. **Validasi Heksadesimal UUID v5:** Memperketat `parseUuid` agar menolak karakter non-heksadesimal alih-alih secara diam-diam menghasilkan byte 0 via `parseInt` `NaN`.
+    5. **Pencegahan Kebocoran Log Pra-Kreasi pada Siklus Mingguan:** Memastikan evaluasi hari pada `calculateWeeklyStreak` dan `calculateWeeklyRatio` dimulai tepat dari `habit.created_date`, mencegah log yang salah tanggal sebelum penciptaan habit dihitung ke dalam rasio atau streak.
+    6. **Ketahanan Terhadap Log Duplikat/Uncoalesced:** Mengintegrasikan pembanding `doesIncomingWinLww` pada pembentukan map `logsByDate`, menjamin record log paling mutakhir menang secara deterministik meskipun log belum di-coalesce.
+    7. **Default Zod Schema:** Menambahkan default `null` pada `category_id`, `satuan`, `deleted_at`, dan `server_seq` agar pembuatan payload dari klien atau impor JSON dapat berjalan mulus tanpa error skema.
+  - Memperluas cakupan unit test dari 46 test menjadi 52 test di Vitest, menguji seluruh skenario perbaikan baru dengan tingkat kelulusan 100%.
+- **Decisions made and why:**
+  - Memperbaiki logika murni secara langsung di `@vibehabit/shared` dengan zero additional dependencies dan tanpa mengubah kontrak skema eksternal, menjaga 100% kepatuhan pada 10 Strict Guardrails di `AGENTS.md`.
+- **Deviation from plan (if any):** Tidak ada deviasi.
+- **Upstream doc update needed?** Tidak ada.
+

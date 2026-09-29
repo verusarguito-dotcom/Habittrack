@@ -89,6 +89,23 @@ describe('Domain Schemas Validation (T002)', () => {
       };
       expect(() => habitSchema.parse(data)).toThrow();
     });
+
+    it('applies default values for omitted optional fields', () => {
+      const minimalData = {
+        id: validUuid,
+        nama: 'Meditasi',
+        mode: 'checklist' as const,
+        created_date: '2026-09-29',
+        updated_at: nowIso,
+        device_id: 'device-1'
+      };
+      const parsed = habitSchema.parse(minimalData);
+      expect(parsed.category_id).toBeNull();
+      expect(parsed.satuan).toBeNull();
+      expect(parsed.deleted_at).toBeNull();
+      expect(parsed.server_seq).toBeNull();
+      expect(parsed.archived).toBe(false);
+    });
   });
 
   describe('habitScheduleSchema', () => {

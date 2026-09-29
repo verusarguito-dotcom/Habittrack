@@ -289,6 +289,10 @@ describe('Streak Counter & Success Ratio Calculations (T004 / PRD 7.1–7.5 & 11
       expect(isDaySuccessful(habit, schedules[0]!, logs[0])).toBe(true);
       expect(isDaySuccessful(habit, schedules[0]!, logs[1])).toBe(false);
       expect(isDaySuccessful(habit, schedules[0]!, logs[2])).toBe(true);
+
+      // PRD 7.2: Partial value with selesai: true MUST still be false
+      const partialWithSelesaiTrue = createLog('2026-09-04', true, 15);
+      expect(isDaySuccessful(habit, schedules[0]!, partialWithSelesaiTrue)).toBe(false);
     });
   });
 
@@ -471,6 +475,114 @@ describe('Streak Counter & Success Ratio Calculations (T004 / PRD 7.1–7.5 & 11
       expect(ratioRes.successfulDays).toBe(2); // Sept 1 and Sept 3 only
       expect(ratioRes.scheduledDays).toBe(3);
       expect(ratioRes.ratio).toBeCloseTo(2 / 3, 4);
+    });
+  });
+
+  describe('9. Isolation & Concurrency Resilience', () => {
+    it('strictly isolates schedules by habit_id', () => {
+      const habitA = createHabit({ id: 'habit-A', created_date: '2026-09-01' });
+      const schedA = createDailySchedule({ habit_id: 'habit-A', effective_from: '2026-09-01' });
+
+      // Habit B has an MWF schedule with a LATER effective_from date
+      const schedB: HabitSchedule = {
+        id: 'sched-B',
+        habit_id: 'habit-B',
+        tipe_frekuensi: 'specific_days',
+        hari_terjadwal: [1, 3, 5],
+        jumlah_per_minggu: null,
+        target: 1,
+        effective_from: '2026-09-05',
+        updated_at: nowIso,
+        deleted_at: null,
+        device_id: 'device-1'
+      };
+
+      const mixedSchedules = [schedA, schedB];
+      const logsA = [
+        createLog('2026-09-01'),
+        createLog('2026-09-02'),
+        createLog('2026-09-03'),
+        createLog('2026-09-04'),
+        createLog('2026-09-05')
+      ].map((l) => ({ ...l, habit_id: 'habit-A' }));
+
+      // SchedB must NOT override SchedA for HabitA
+      const streakA = calculateStreak(habitA, mixedSchedules, logsA, '2026-09-05');
+      expect(streakA.currentStreak).toBe(5);
+
+      const ratioA = calculateSuccessRatio(habitA, mixedSchedules, logsA, '2026-09-05');
+      expect(ratioA.scheduledDays).toBe(5);
+      expect(ratioA.successfulDays).toBe(5);
+      expect(ratioA.ratio).toBe(1.0);
+    });
+
+    it('resolves duplicate uncoalesced logs for the same date using LWW', () => {
+      const habit = createHabit({ created_date: '2026-09-01' });
+      const schedules = [createDailySchedule()];
+
+      // Two logs for 2026-09-01: older is done=false, newer is done=true
+      const logs = [
+        {
+          id: 'log-older',
+          habit_id: habitId,
+          tanggal: '2026-09-01',
+          nilai: null,
+          selesai: false,
+          updated_at: '2026-09-01T10:00:00.000Z',
+          deleted_at: null,
+          device_id: 'device-1'
+        },
+        {
+          id: 'log-newer',
+          habit_id: habitId,
+          tanggal: '2026-09-01',
+          nilai: null,
+          selesai: true,
+          updated_at: '2026-09-01T11:00:00.000Z',
+          deleted_at: null,
+          device_id: 'device-1'
+        }
+      ];
+
+      // Newer log (selesai=true) should win via LWW regardless of order
+      const res = calculateStreak(habit, schedules, logs, '2026-09-01');
+      expect(res.currentStreak).toBe(1);
+
+      // Reversed array order: newer first, older second
+      const resReversed = calculateStreak(habit, schedules, [logs[1]!, logs[0]!], '2026-09-01');
+      expect(resReversed.currentStreak).toBe(1);
+    });
+
+    it('does not leak pre-creation logs into weekly calculations', () => {
+      // Created on Thursday 2026-09-10
+      const habit = createHabit({ created_date: '2026-09-10' });
+      const schedules: HabitSchedule[] = [{
+        id: 'sched-x',
+        habit_id: habitId,
+        tipe_frekuensi: 'x_per_week',
+        hari_terjadwal: null,
+        jumlah_per_minggu: 2,
+        target: 1,
+        effective_from: '2026-09-10',
+        updated_at: nowIso,
+        deleted_at: null,
+        device_id: 'device-1'
+      }];
+
+      // Rogue log on Monday 2026-09-07 before habit creation
+      const logs = [
+        createLog('2026-09-07'), // Before created_date!
+        createLog('2026-09-11'), // Friday (valid)
+        createLog('2026-09-12')  // Saturday (valid)
+      ];
+
+      // Only Friday & Saturday should count toward the week's 2 completions
+      const streakRes = calculateStreak(habit, schedules, logs, '2026-09-13');
+      expect(streakRes.currentStreak).toBe(1);
+
+      // If only rogue log existed, streak must be 0
+      const rogueOnlyStreak = calculateStreak(habit, schedules, [createLog('2026-09-07')], '2026-09-13');
+      expect(rogueOnlyStreak.currentStreak).toBe(0);
     });
   });
 });

@@ -89,7 +89,7 @@ function sha1(message: Uint8Array): Uint8Array {
 
 function parseUuid(uuid: string): Uint8Array {
   const clean = uuid.replace(/-/g, '');
-  if (clean.length !== 32) {
+  if (clean.length !== 32 || !/^[0-9a-fA-F]{32}$/.test(clean)) {
     throw new Error(`Invalid UUID format: "${uuid}"`);
   }
   const bytes = new Uint8Array(16);

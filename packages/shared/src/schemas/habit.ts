@@ -5,9 +5,9 @@ export const habitModeSchema = z.enum(['checklist', 'quantitative']);
 
 export const habitSchema = baseSyncableEntitySchema.extend({
   nama: z.string().trim().min(1, 'Habit name cannot be empty'),
-  category_id: uuidSchema.nullable(),
+  category_id: uuidSchema.nullable().default(null),
   mode: habitModeSchema,
-  satuan: z.string().trim().nullable(),
+  satuan: z.string().trim().nullable().default(null),
   archived: z.boolean().default(false),
   created_date: isoDateStringSchema
 });

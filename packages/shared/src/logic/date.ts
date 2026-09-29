@@ -36,9 +36,17 @@ export function getEffectiveDate(
   date: Date | string | number = new Date(),
   dayStartOffset = '00:00'
 ): string {
-  const d = date instanceof Date ? new Date(date.getTime()) : new Date(date);
+  let d: Date;
+  if (date instanceof Date) {
+    d = new Date(date.getTime());
+  } else if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    // Plain YYYY-MM-DD string: parse as local midnight to avoid UTC timezone shifts
+    d = parseLocalDate(date);
+  } else {
+    d = new Date(date);
+  }
 
-  const [hoursStr = '00', minutesStr = '00'] = dayStartOffset.split(':');
+  const [hoursStr = '00', minutesStr = '00'] = (dayStartOffset || '00:00').split(':');
   const hours = Number(hoursStr) || 0;
   const minutes = Number(minutesStr) || 0;
   const offsetMs = (hours * 60 + minutes) * 60 * 1000;

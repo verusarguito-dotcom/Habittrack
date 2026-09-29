@@ -12,6 +12,7 @@ import {
   isDateScheduled,
   isDaySuccessful
 } from './schedule.js';
+import { doesIncomingWinLww } from './lww.js';
 
 export interface StreakResult {
   currentStreak: number;
@@ -34,27 +35,35 @@ export function calculateStreak(
   logs: HabitLog[],
   todayStr: string
 ): StreakResult {
-  if (schedules.length === 0 || habit.created_date > todayStr) {
+  // Filter schedules strictly belonging to this habit and not deleted
+  const habitSchedules = schedules.filter(
+    (s) => s.habit_id === habit.id && s.deleted_at === null
+  );
+
+  if (habitSchedules.length === 0 || habit.created_date > todayStr) {
     return { currentStreak: 0, longestStreak: 0 };
   }
 
-  // Fast map of non-deleted logs by date
+  // Fast map of non-deleted logs by date, resolving duplicates with LWW
   const logsByDate = new Map<string, HabitLog>();
   for (const log of logs) {
     if (log.habit_id === habit.id && log.deleted_at === null) {
-      logsByDate.set(log.tanggal, log);
+      const existing = logsByDate.get(log.tanggal);
+      if (!existing || doesIncomingWinLww(log, existing)) {
+        logsByDate.set(log.tanggal, log);
+      }
     }
   }
 
   // Determine if this habit uses weekly frequency
-  const latestSchedule = getActiveScheduleForDate(schedules, todayStr);
+  const latestSchedule = getActiveScheduleForDate(habitSchedules, todayStr);
   const isWeekly = latestSchedule?.tipe_frekuensi === 'x_per_week';
 
   if (isWeekly) {
-    return calculateWeeklyStreak(habit, schedules, logsByDate, todayStr);
+    return calculateWeeklyStreak(habit, habitSchedules, logsByDate, todayStr);
   }
 
-  return calculateDailyOrSpecificDaysStreak(habit, schedules, logsByDate, todayStr);
+  return calculateDailyOrSpecificDaysStreak(habit, habitSchedules, logsByDate, todayStr);
 }
 
 function calculateWeeklyStreak(
@@ -80,9 +89,10 @@ function calculateWeeklyStreak(
 
     // Count successful days in this week up to today
     let weekSuccesses = 0;
-    let day = weekMonday;
+    let day = weekMonday < habit.created_date ? habit.created_date : weekMonday;
     while (day <= weekSunday && day <= todayStr) {
-      if (sched && isDaySuccessful(habit, sched, logsByDate.get(day))) {
+      const daySched = getActiveScheduleForDate(schedules, day) ?? sched;
+      if (daySched && isDaySuccessful(habit, daySched, logsByDate.get(day))) {
         weekSuccesses++;
       }
       day = addDays(day, 1);

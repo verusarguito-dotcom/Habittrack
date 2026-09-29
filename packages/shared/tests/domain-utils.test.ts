@@ -46,6 +46,19 @@ describe('Domain Pure Utilities (T003)', () => {
       expect(generateLogId(habitId1, date1)).not.toBe(generateLogId(habitId1, date2));
       expect(generateLogId(habitId1, date1)).not.toBe(generateLogId(habitId2, date1));
     });
+
+    it('rejects invalid non-hex namespace UUIDs', () => {
+      expect(() => uuidv5('test', 'not-a-valid-hex-uuid-string-at-all-00')).toThrow(/Invalid UUID format/);
+      expect(() => uuidv5('test', '12345')).toThrow(/Invalid UUID format/);
+    });
+
+    it('handles long names crossing SHA-1 64-byte block boundary deterministically', () => {
+      const longName = 'habit-long-name-exceeding-standard-length-for-sha1-block-boundary-testing-abcdefghijklmnopqrstuvwxyz';
+      const id1 = uuidv5(longName);
+      const id2 = uuidv5(longName);
+      expect(id1).toBe(id2);
+      expect(id1).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+    });
   });
 
   describe('LWW Comparator with device_id Tie-Break', () => {
@@ -135,6 +148,7 @@ describe('Domain Pure Utilities (T003)', () => {
       const earlyMorning = new Date(2026, 8, 29, 1, 30); // 01:30
       expect(getEffectiveDate(earlyMorning, '00:00')).toBe('2026-09-29');
       expect(getEffectiveDate(earlyMorning)).toBe('2026-09-29');
+      expect(getEffectiveDate('2026-09-29', '00:00')).toBe('2026-09-29');
     });
 
     it('getEffectiveDate with 04:00 offset shifts nocturnal hours to previous day', () => {
