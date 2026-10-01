@@ -393,3 +393,30 @@ Catat entri baru pada berkas ini setiap kali:
   * Mendaftarkan seluruh entitas hasil import JSON langsung ke outbox Dexie agar sinkronisasi data ke PostgreSQL VPS berjalan otomatis dan transparan saat online.
 - **Deviation from plan (if any):** Tidak ada deviasi. Seluruh kriteria spesifikasi Milestone 5 (T014 & T015) terpenuhi 100%.
 - **Upstream doc update needed?** Tidak ada.
+
+### 2026-10-01 — Milestone 5 Review & Hardening
+- **What was done:**
+  - **1. Integrasi Authoritative Domain Logic `calculateSuccessRatio` (`AnalyticsDashboard.tsx`):**
+    * Mengganti perulangan inline ad-hoc dengan fungsi domain murni `@vibehabit/shared` (`calculateSuccessRatio`).
+    * Memperbaiki kepatuhan PRD §7.4: hari ini yang belum selesai tidak dihitung ke penyebut rasio.
+    * Menjamin perhitungan rasio untuk habit `x_per_week` menghasilkan 100% saat target mingguan tercapai (bukan 42.8% akibat asumsi denominator 7-hari).
+  - **2. Presisi Tooltip Kalender Heatmap (`CalendarHeatmap.tsx`):**
+    * Memisahkan status hari rehat murni (`scheduledCount === 0` -> "Rehat (tidak ada jadwal)") dari hari dengan target yang terlewat (`scheduledCount > 0 && completedCount === 0` -> "0/N selesai (0%)").
+  - **3. Penanganan Hari Rehat pada Grafik Konsistensi (`ConsistencyChart.tsx`):**
+    * Mencegah grafik tren konsistensi anjlok secara palsu ke 0% pada hari libur terjadwal (misal: akhir pekan).
+    * Menambahkan styling titik netral dan label tooltip "Hari Rehat (tidak ada jadwal)".
+  - **4. Pencegahan Rollover Tanggal Navigasi Heatmap (`AnalyticsDashboard.tsx`):**
+    * Menyetel `baseDate.setDate(1)` sebelum `setMonth(m + offset)` untuk mencegah date overflow pada akhir bulan (misal tanggal 31).
+  - **5. Kontrol Toggle Habit Diarsipkan (`AnalyticsDashboard.tsx`):**
+    * Menambahkan tombol toggle "Sertakan Diarsipkan" per PRD §7.5 sehingga riwayat habit non-aktif dapat disertakan atau disembunyikan sesuai preferensi pengguna.
+  - **6. Pengurutan Kronologis Ekspor CSV (`exportImport.ts`):**
+    * Menjamin baris log CSV tersusun secara kronologis `tanggal ASC, habit_id ASC` untuk memudahkan analisis tabel eksternal.
+  - **7. Optimasi Batching Outbox Impor (`exportImport.ts`):**
+    * Mengganti pemanggilan sekuensial individual `enqueueOutbox` dengan `db.outbox.bulkPut` dalam transaksi Dexie untuk mengeliminasi risiko transaction timeout pada ribuan log.
+  - **8. Pengujian Regresi Tambahan (`apps/web/tests/`):**
+    * Menambahkan 3 pengujian baru pada `analytics-dashboard.test.tsx` (total 444 tests lulus 100%).
+- **Hasil Verifikasi Penuh:**
+  * `npm test`: 444 tests lulus 100% lintas 57 test files di Vitest (14s) tanpa kegagalan.
+  * `npm run typecheck`: 0 error lintas seluruh workspace.
+  * `npm run lint`: 0 error linting.
+  * `npm run build`: Kompilasi produksi lulus 100%.

@@ -154,9 +154,28 @@ describe('Data Management & Disaster Recovery (T015)', () => {
       };
       await saveHabitLog(db, log, testDeviceId);
 
+      // Add earlier log inserted later to verify chronological sorting
+      const earlierLog: HabitLog = {
+        id: '123e4567-e89b-12d3-a456-426614174006',
+        habit_id: habit.id,
+        tanggal: '2026-09-18',
+        nilai: null,
+        selesai: true,
+        updated_at: nowIso,
+        deleted_at: null,
+        device_id: testDeviceId
+      };
+      await saveHabitLog(db, earlierLog, testDeviceId);
+
       const csv = await exportHabitsToCsv(db);
       expect(csv).toContain('Habit,Kategori,Mode,Tanggal,Nilai,Satuan,Selesai');
       expect(csv).toContain('"Membaca Buku",Tanpa Kategori,checklist,2026-09-20,,,1');
+      expect(csv).toContain('"Membaca Buku",Tanpa Kategori,checklist,2026-09-18,,,1');
+
+      // Verify 2026-09-18 appears before 2026-09-20 in CSV lines
+      const pos18 = csv.indexOf('2026-09-18');
+      const pos20 = csv.indexOf('2026-09-20');
+      expect(pos18).toBeLessThan(pos20);
     });
   });
 

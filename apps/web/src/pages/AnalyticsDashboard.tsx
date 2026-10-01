@@ -15,7 +15,8 @@ import {
   getActiveScheduleForDate,
   isDateScheduled,
   isDaySuccessful,
-  calculateStreak
+  calculateStreak,
+  calculateSuccessRatio
 } from '@vibehabit/shared';
 import { liveQuery } from 'dexie';
 import { TimeRangeFilter, type TimeRangeKey } from '../components/analytics/TimeRangeFilter.js';
@@ -50,6 +51,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 }) => {
   const [selectedRange, setSelectedRange] = useState<TimeRangeKey>('30d');
   const [monthOffset, setMonthOffset] = useState<number>(0);
+  const [includeArchived, setIncludeArchived] = useState<boolean>(false);
 
   // Reactive DB subscriptions with optional initial fallback
   const [habits, setHabits] = useState<Habit[]>(initialHabits || []);
@@ -155,10 +157,10 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     return map;
   }, [allLogs]);
 
-  // Active non-archived habits
-  const activeHabits = useMemo(() => {
-    return habits.filter((h) => !h.archived);
-  }, [habits]);
+  // Displayed habits (active habits, or optionally including archived habits per PRD §7.5)
+  const displayedHabits = useMemo(() => {
+    return habits.filter((h) => includeArchived || !h.archived);
+  }, [habits, includeArchived]);
 
   // Calculations across the selected date range
   const {
@@ -179,17 +181,19 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       string,
       { completedCount: number; scheduledCount: number }
     >();
-    for (const h of activeHabits) {
+    for (const h of displayedHabits) {
       hStats.set(h.id, { completedCount: 0, scheduledCount: 0 });
     }
 
     const points: ChartDataPoint[] = [];
+    let lastKnownRatio = 0;
 
     for (const date of dateList) {
       let dayCompleted = 0;
       let dayScheduled = 0;
+      const isDateToday = date === todayStr;
 
-      for (const habit of activeHabits) {
+      for (const habit of displayedHabits) {
         if (habit.created_date > date) continue;
 
         const habitSchedules = schedules.filter((s) => s.habit_id === habit.id);
@@ -199,23 +203,44 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         const isScheduled = isDateScheduled(activeSchedule, date);
         if (!isScheduled) continue;
 
-        dayScheduled++;
-        const stat = hStats.get(habit.id);
-        if (stat) stat.scheduledCount++;
-
         const log = logsMap.get(`${habit.id}:${date}`);
         const success = isDaySuccessful(habit, activeSchedule, log);
 
-        if (success) {
-          dayCompleted++;
-          if (stat) stat.completedCount++;
+        // PRD 7.4: Today is only counted in scheduled denominator if completed or day ended
+        if (isDateToday) {
+          if (success) {
+            dayScheduled++;
+            dayCompleted++;
+            const stat = hStats.get(habit.id);
+            if (stat) {
+              stat.scheduledCount++;
+              stat.completedCount++;
+            }
+          }
+        } else {
+          dayScheduled++;
+          const stat = hStats.get(habit.id);
+          if (stat) stat.scheduledCount++;
+
+          if (success) {
+            dayCompleted++;
+            if (stat) stat.completedCount++;
+          }
         }
       }
 
       sumCompleted += dayCompleted;
       sumScheduled += dayScheduled;
 
-      const dayRatio = dayScheduled > 0 ? dayCompleted / dayScheduled : 0;
+      let dayRatio = 0;
+      if (dayScheduled > 0) {
+        dayRatio = dayCompleted / dayScheduled;
+        lastKnownRatio = dayRatio;
+      } else {
+        // Rest day: maintain previous known ratio so trend line doesn't plummet to 0%
+        dayRatio = lastKnownRatio;
+      }
+
       const [_, mStr, dStr] = date.split('-');
       points.push({
         date,
@@ -240,7 +265,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       }
     >();
 
-    for (const habit of activeHabits) {
+    for (const habit of displayedHabits) {
       const catId = habit.category_id;
       const catName = catId ? categoryMap.get(catId) || 'Tanpa Kategori' : 'Tanpa Kategori';
       const existing = catBuckets.get(catId) || {
@@ -279,7 +304,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       habitStatsMap: hStats,
       categoryStats: catStatsList
     };
-  }, [startDate, endDate, activeHabits, schedules, logsMap, categoryMap]);
+  }, [startDate, endDate, displayedHabits, schedules, logsMap, categoryMap, todayStr]);
 
   // Streaks and individual habit performance breakdown
   const {
@@ -297,7 +322,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
     const items: HabitPerformanceItem[] = [];
 
-    for (const habit of activeHabits) {
+    for (const habit of displayedHabits) {
       const habitSchedules = schedules.filter((s) => s.habit_id === habit.id);
       const streakResult = calculateStreak(
         habit,
@@ -311,15 +336,27 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         maxStreakHabitName = habit.nama;
       }
 
+      // Authoritative pure domain ratio calculation
+      const domainRatioResult = calculateSuccessRatio(
+        habit,
+        habitSchedules,
+        allLogs,
+        todayStr
+      );
+
       const hStat = habitStatsMap.get(habit.id) || {
         completedCount: 0,
         scheduledCount: 0
       };
-      const ratio =
-        hStat.scheduledCount > 0 ? hStat.completedCount / hStat.scheduledCount : 0;
+      const periodRatio =
+        hStat.scheduledCount > 0
+          ? hStat.completedCount / hStat.scheduledCount
+          : domainRatioResult.ratio;
 
-      if (hStat.scheduledCount > 0 && ratio > bestRatio) {
-        bestRatio = ratio;
+      const effectiveRatio = domainRatioResult.scheduledDays > 0 ? domainRatioResult.ratio : periodRatio;
+
+      if (effectiveRatio > bestRatio) {
+        bestRatio = effectiveRatio;
         bestRatioHabitName = habit.nama;
       }
 
@@ -331,7 +368,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         satuan: habit.satuan,
         currentStreak: streakResult.currentStreak,
         longestStreak: streakResult.longestStreak,
-        ratio,
+        ratio: periodRatio,
         completedCount: hStat.completedCount,
         scheduledCount: hStat.scheduledCount
       });
@@ -344,13 +381,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       mostConsistentHabitName: bestRatio >= 0 ? bestRatioHabitName : undefined,
       mostConsistentHabitRatio: bestRatio >= 0 ? bestRatio : undefined
     };
-  }, [activeHabits, schedules, allLogs, todayStr, habitStatsMap, categoryMap]);
+  }, [displayedHabits, schedules, allLogs, todayStr, habitStatsMap, categoryMap]);
 
   // Heatmap generation based on monthOffset
   const { heatmapDays, heatmapMonthLabel } = useMemo(() => {
     const baseDate = parseLocalDate(todayStr);
-    // Shift by monthOffset
-    baseDate.setMonth(baseDate.getMonth() + monthOffset, 1);
+    // Set to 1st of month first to avoid month-end rollover bugs (e.g. 31st)
+    baseDate.setDate(1);
+    baseDate.setMonth(baseDate.getMonth() + monthOffset);
 
     const year = baseDate.getFullYear();
     const month = baseDate.getMonth(); // 0-indexed
@@ -374,7 +412,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       let completedCount = 0;
       let scheduledCount = 0;
 
-      for (const habit of activeHabits) {
+      for (const habit of displayedHabits) {
         if (habit.created_date > date) continue;
         const habitSchedules = schedules.filter((s) => s.habit_id === habit.id);
         const activeSchedule = getActiveScheduleForDate(habitSchedules, date);
@@ -406,7 +444,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       heatmapDays: days,
       heatmapMonthLabel: monthLabel
     };
-  }, [todayStr, monthOffset, activeHabits, schedules, logsMap]);
+  }, [todayStr, monthOffset, displayedHabits, schedules, logsMap]);
 
   return (
     <div className="flex flex-col gap-5 md:gap-6 w-full animate-fadeIn pb-8">
@@ -421,10 +459,25 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
           </h1>
         </div>
 
-        <TimeRangeFilter
-          selectedRange={selectedRange}
-          onRangeChange={setSelectedRange}
-        />
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            onClick={() => setIncludeArchived((prev) => !prev)}
+            aria-pressed={includeArchived}
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
+              includeArchived
+                ? 'bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border-teal-300 dark:border-teal-700 font-semibold'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+          >
+            {includeArchived ? '✓ Termasuk Diarsipkan' : '+ Sertakan Diarsipkan'}
+          </button>
+
+          <TimeRangeFilter
+            selectedRange={selectedRange}
+            onRangeChange={setSelectedRange}
+          />
+        </div>
       </div>
 
       {/* KPI Metric Summary Cards */}

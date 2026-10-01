@@ -4,7 +4,7 @@ import type {
 } from '@vibehabit/shared';
 import { backupDataSchema, compareLww } from '@vibehabit/shared';
 import type { VibeHabitDatabase } from '../db/database.js';
-import { enqueueOutbox } from '../db/operations.js';
+import type { OutboxItem } from '../db/types.js';
 
 export interface ImportPreviewStats {
   categoryCount: number;
@@ -121,8 +121,15 @@ export async function exportHabitsToCsv(db: VibeHabitDatabase): Promise<string> 
 
   const rows: string[] = ['Habit,Kategori,Mode,Tanggal,Nilai,Satuan,Selesai'];
 
-  for (const log of logs) {
-    if (log.deleted_at) continue;
+  const sortedLogs = logs
+    .filter((l) => !l.deleted_at)
+    .sort((a, b) => {
+      const dateCmp = a.tanggal.localeCompare(b.tanggal);
+      if (dateCmp !== 0) return dateCmp;
+      return a.habit_id.localeCompare(b.habit_id);
+    });
+
+  for (const log of sortedLogs) {
     const habit = habitMap.get(log.habit_id);
     const habitName = habit ? `"${habit.nama.replace(/"/g, '""')}"` : 'Unknown';
     const catName = habit?.category_id && catMap.has(habit.category_id)
@@ -184,6 +191,17 @@ export function validateBackupJson(raw: unknown): ValidationResult {
   }
 }
 
+function generateUuid(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 /**
  * Imports a validated BackupData snapshot into Dexie IndexedDB.
  * Supports:
@@ -211,6 +229,9 @@ export async function importBackupData(
     'rw',
     [db.categories, db.habits, db.habit_schedules, db.logs, db.settings, db.outbox],
     async () => {
+      const outboxItemsToEnqueue: OutboxItem[] = [];
+      const nowIso = new Date().toISOString();
+
       if (mode === 'clean_restore') {
         // Clear all tables
         await Promise.all([
@@ -226,7 +247,15 @@ export async function importBackupData(
         if (categories.length > 0) {
           await db.categories.bulkPut(categories);
           for (const c of categories) {
-            await enqueueOutbox(db, 'categories', c.id, c.deleted_at ? 'delete' : 'insert', c);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'categories',
+              record_id: c.id,
+              action: c.deleted_at ? 'delete' : 'insert',
+              record: c,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
           }
           appliedStats.categories = categories.length;
         }
@@ -234,7 +263,15 @@ export async function importBackupData(
         if (habits.length > 0) {
           await db.habits.bulkPut(habits);
           for (const h of habits) {
-            await enqueueOutbox(db, 'habits', h.id, h.deleted_at ? 'delete' : 'insert', h);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'habits',
+              record_id: h.id,
+              action: h.deleted_at ? 'delete' : 'insert',
+              record: h,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
           }
           appliedStats.habits = habits.length;
         }
@@ -242,7 +279,15 @@ export async function importBackupData(
         if (habit_schedules.length > 0) {
           await db.habit_schedules.bulkPut(habit_schedules);
           for (const s of habit_schedules) {
-            await enqueueOutbox(db, 'habit_schedules', s.id, s.deleted_at ? 'delete' : 'insert', s);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'habit_schedules',
+              record_id: s.id,
+              action: s.deleted_at ? 'delete' : 'insert',
+              record: s,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
           }
           appliedStats.schedules = habit_schedules.length;
         }
@@ -250,7 +295,15 @@ export async function importBackupData(
         if (logs.length > 0) {
           await db.logs.bulkPut(logs);
           for (const l of logs) {
-            await enqueueOutbox(db, 'logs', l.id, l.deleted_at ? 'delete' : 'insert', l);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'logs',
+              record_id: l.id,
+              action: l.deleted_at ? 'delete' : 'insert',
+              record: l,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
           }
           appliedStats.logs = logs.length;
         }
@@ -258,7 +311,15 @@ export async function importBackupData(
         if (settings && settings.length > 0) {
           await db.settings.bulkPut(settings);
           for (const s of settings) {
-            await enqueueOutbox(db, 'settings', s.id, s.deleted_at ? 'delete' : 'insert', s);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'settings',
+              record_id: s.id,
+              action: s.deleted_at ? 'delete' : 'insert',
+              record: s,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
           }
         }
       } else {
@@ -269,7 +330,15 @@ export async function importBackupData(
           if (!existing || compareLww(incoming, existing) > 0) {
             await db.categories.put(incoming);
             const action = incoming.deleted_at ? 'delete' : existing ? 'update' : 'insert';
-            await enqueueOutbox(db, 'categories', incoming.id, action, incoming);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'categories',
+              record_id: incoming.id,
+              action,
+              record: incoming,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
             appliedStats.categories++;
           }
         }
@@ -280,7 +349,15 @@ export async function importBackupData(
           if (!existing || compareLww(incoming, existing) > 0) {
             await db.habits.put(incoming);
             const action = incoming.deleted_at ? 'delete' : existing ? 'update' : 'insert';
-            await enqueueOutbox(db, 'habits', incoming.id, action, incoming);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'habits',
+              record_id: incoming.id,
+              action,
+              record: incoming,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
             appliedStats.habits++;
           }
         }
@@ -291,18 +368,45 @@ export async function importBackupData(
           if (!existing || compareLww(incoming, existing) > 0) {
             await db.habit_schedules.put(incoming);
             const action = incoming.deleted_at ? 'delete' : existing ? 'update' : 'insert';
-            await enqueueOutbox(db, 'habit_schedules', incoming.id, action, incoming);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'habit_schedules',
+              record_id: incoming.id,
+              action,
+              record: incoming,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
             appliedStats.schedules++;
           }
         }
 
         // 4. Logs
         for (const incoming of logs) {
-          const existing = await db.logs.get(incoming.id);
+          // Check uniqueness constraint on [habit_id+tanggal]
+          const existingByCombo = await db.logs
+            .where('[habit_id+tanggal]')
+            .equals([incoming.habit_id, incoming.tanggal])
+            .first();
+
+          const existingById = await db.logs.get(incoming.id);
+          const existing = existingByCombo || existingById;
+
           if (!existing || compareLww(incoming, existing) > 0) {
+            if (existing && existing.id !== incoming.id) {
+              await db.logs.delete(existing.id);
+            }
             await db.logs.put(incoming);
             const action = incoming.deleted_at ? 'delete' : existing ? 'update' : 'insert';
-            await enqueueOutbox(db, 'logs', incoming.id, action, incoming);
+            outboxItemsToEnqueue.push({
+              id: generateUuid(),
+              table: 'logs',
+              record_id: incoming.id,
+              action,
+              record: incoming,
+              predecessor_ids: [],
+              created_at: nowIso
+            });
             appliedStats.logs++;
           }
         }
@@ -314,10 +418,22 @@ export async function importBackupData(
             if (!existing || compareLww(incoming, existing) > 0) {
               await db.settings.put(incoming);
               const action = incoming.deleted_at ? 'delete' : existing ? 'update' : 'insert';
-              await enqueueOutbox(db, 'settings', incoming.id, action, incoming);
+              outboxItemsToEnqueue.push({
+                id: generateUuid(),
+                table: 'settings',
+                record_id: incoming.id,
+                action,
+                record: incoming,
+                predecessor_ids: [],
+                created_at: nowIso
+              });
             }
           }
         }
+      }
+
+      if (outboxItemsToEnqueue.length > 0) {
+        await db.outbox.bulkPut(outboxItemsToEnqueue);
       }
     }
   );

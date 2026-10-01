@@ -339,5 +339,172 @@ describe('Analytics Dashboard Components & Engine (T014)', () => {
       expect(html).toContain('Minum Air 2L');
       expect(html).toContain('Kesehatan');
     });
+
+    it('uses pure domain calculateSuccessRatio for x_per_week habits yielding accurate 100% ratio', async () => {
+      const nowIso = new Date().toISOString();
+      const weeklyHabit: Habit = {
+        id: '123e4567-e89b-12d3-a456-426614174020',
+        nama: 'Berenang 2x Seminggu',
+        category_id: null,
+        mode: 'checklist',
+        satuan: null,
+        archived: false,
+        created_date: '2026-09-21',
+        updated_at: nowIso,
+        deleted_at: null,
+        device_id: testDeviceId
+      };
+      const weeklySchedule: HabitSchedule = {
+        id: '123e4567-e89b-12d3-a456-426614174021',
+        habit_id: weeklyHabit.id,
+        tipe_frekuensi: 'x_per_week',
+        hari_terjadwal: null,
+        jumlah_per_minggu: 2,
+        target: 1,
+        effective_from: '2026-09-21',
+        updated_at: nowIso,
+        deleted_at: null,
+        device_id: testDeviceId
+      };
+
+      const logs: HabitLog[] = [
+        {
+          id: generateLogId(weeklyHabit.id, '2026-09-21'),
+          habit_id: weeklyHabit.id,
+          tanggal: '2026-09-21',
+          nilai: null,
+          selesai: true,
+          updated_at: nowIso,
+          deleted_at: null,
+          device_id: testDeviceId
+        },
+        {
+          id: generateLogId(weeklyHabit.id, '2026-09-23'),
+          habit_id: weeklyHabit.id,
+          tanggal: '2026-09-23',
+          nilai: null,
+          selesai: true,
+          updated_at: nowIso,
+          deleted_at: null,
+          device_id: testDeviceId
+        }
+      ];
+
+      const html = renderToStaticMarkup(
+        <AnalyticsDashboard
+          db={db}
+          deviceId={testDeviceId}
+          referenceDate="2026-09-27"
+          initialHabits={[weeklyHabit]}
+          initialSchedules={[weeklySchedule]}
+          initialCategories={[]}
+          initialLogs={logs}
+        />
+      );
+
+      // Weekly habit completed 2/2 target -> 100% ratio, NOT 2/7 (29%)
+      expect(html).toContain('Berenang 2x Seminggu');
+      expect(html).toContain('100%');
+      expect(html).not.toContain('29%');
+    });
+
+    it('respects PRD 7.4 rule that uncompleted today does not penalize ratio denominator', async () => {
+      const nowIso = new Date().toISOString();
+      const dailyHabit: Habit = {
+        id: '123e4567-e89b-12d3-a456-426614174030',
+        nama: 'Jurnal Malam',
+        category_id: null,
+        mode: 'checklist',
+        satuan: null,
+        archived: false,
+        created_date: '2026-09-23',
+        updated_at: nowIso,
+        deleted_at: null,
+        device_id: testDeviceId
+      };
+      const dailySchedule: HabitSchedule = {
+        id: '123e4567-e89b-12d3-a456-426614174031',
+        habit_id: dailyHabit.id,
+        tipe_frekuensi: 'daily',
+        hari_terjadwal: null,
+        jumlah_per_minggu: null,
+        target: 1,
+        effective_from: '2026-09-23',
+        updated_at: nowIso,
+        deleted_at: null,
+        device_id: testDeviceId
+      };
+
+      // Completed yesterday (2026-09-23), NOT completed today (2026-09-24)
+      const logs: HabitLog[] = [
+        {
+          id: generateLogId(dailyHabit.id, '2026-09-23'),
+          habit_id: dailyHabit.id,
+          tanggal: '2026-09-23',
+          nilai: null,
+          selesai: true,
+          updated_at: nowIso,
+          deleted_at: null,
+          device_id: testDeviceId
+        }
+      ];
+
+      const html = renderToStaticMarkup(
+        <AnalyticsDashboard
+          db={db}
+          deviceId={testDeviceId}
+          referenceDate="2026-09-24"
+          initialHabits={[dailyHabit]}
+          initialSchedules={[dailySchedule]}
+          initialCategories={[]}
+          initialLogs={logs}
+        />
+      );
+
+      // Today uncompleted is excluded from denominator: 1 scheduled day (yesterday), 1 successful -> 100%
+      expect(html).toContain('Jurnal Malam');
+      expect(html).toContain('100%');
+    });
+
+    it('renders rest day tooltips accurately in CalendarHeatmap and ConsistencyChart', () => {
+      const restDay = {
+        date: '2026-09-26',
+        dayNumber: 26,
+        completedCount: 0,
+        scheduledCount: 0,
+        ratio: 0,
+        isFuture: false,
+        isToday: false
+      };
+      const missedDay = {
+        date: '2026-09-27',
+        dayNumber: 27,
+        completedCount: 0,
+        scheduledCount: 2,
+        ratio: 0,
+        isFuture: false,
+        isToday: false
+      };
+
+      const heatmapHtml = renderToStaticMarkup(
+        <CalendarHeatmap
+          days={[restDay, missedDay]}
+          monthLabel="September 2026"
+        />
+      );
+
+      expect(heatmapHtml).toContain('Rehat (tidak ada jadwal)');
+      expect(heatmapHtml).toContain('0/2 selesai (0%)');
+
+      const chartHtml = renderToStaticMarkup(
+        <ConsistencyChart
+          dataPoints={[
+            { date: '2026-09-26', label: '26/09', ratio: 0.5, completedCount: 0, scheduledCount: 0 }
+          ]}
+          averageRatio={0.5}
+        />
+      );
+      expect(chartHtml).toContain('aria-label="26/09: Hari Rehat"');
+    });
   });
 });

@@ -185,6 +185,7 @@ export const ConsistencyChart: React.FC<ConsistencyChartProps> = ({
               const cx = getX(idx);
               const cy = getY(pt.ratio);
               const isHovered = hoveredIndex === idx;
+              const isRest = pt.scheduledCount === 0;
 
               return (
                 <g key={pt.date}>
@@ -200,15 +201,15 @@ export const ConsistencyChart: React.FC<ConsistencyChartProps> = ({
                     onFocus={() => setHoveredIndex(idx)}
                     onBlur={() => setHoveredIndex(null)}
                     tabIndex={0}
-                    aria-label={`${pt.label}: ${Math.round(pt.ratio * 100)}%`}
+                    aria-label={isRest ? `${pt.label}: Hari Rehat` : `${pt.label}: ${Math.round(pt.ratio * 100)}%`}
                   />
                   {/* Visible point circle */}
                   <circle
                     cx={cx}
                     cy={cy}
                     r={isHovered ? 6 : pointsCount <= 14 ? 4 : 2.5}
-                    fill={isHovered ? '#0D9488' : '#ffffff'}
-                    stroke="#0D9488"
+                    fill={isHovered ? (isRest ? '#94A3B8' : '#0D9488') : isRest ? '#F1F5F9' : '#ffffff'}
+                    stroke={isRest ? '#94A3B8' : '#0D9488'}
                     strokeWidth={isHovered ? 2.5 : 2}
                     className="transition-all duration-150 pointer-events-none"
                   />
@@ -247,7 +248,9 @@ export const ConsistencyChart: React.FC<ConsistencyChartProps> = ({
           >
             <div className="font-semibold">{activePoint.date}</div>
             <div className="text-[11px] opacity-90">
-              {Math.round(activePoint.ratio * 100)}% ({activePoint.completedCount}/{activePoint.scheduledCount} selesai)
+              {activePoint.scheduledCount === 0
+                ? 'Hari Rehat (tidak ada jadwal)'
+                : `${Math.round(activePoint.ratio * 100)}% (${activePoint.completedCount}/${activePoint.scheduledCount} selesai)`}
             </div>
           </div>
         )}

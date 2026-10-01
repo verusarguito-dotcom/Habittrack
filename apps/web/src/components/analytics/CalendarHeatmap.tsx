@@ -153,8 +153,10 @@ export const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({
           const percent = Math.round(day.ratio * 100);
           const tooltipContent = day.isFuture
             ? `${day.date}: Belum berlangsung`
+            : day.scheduledCount === 0
+            ? `${day.date}: Rehat (tidak ada jadwal)`
             : day.completedCount === 0
-            ? `${day.date}: Rehat (0 selesai)`
+            ? `${day.date}: 0/${day.scheduledCount} selesai (0%)`
             : `${day.date}: ${day.completedCount}/${day.scheduledCount} selesai (${percent}%)`;
 
           const isTooltipActive = activeTooltipDate === day.date;
