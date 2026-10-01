@@ -10,6 +10,8 @@ export const isoTimestampSchema = z.string().refine((val) => !isNaN(Date.parse(v
   message: 'Must be a valid ISO 8601 date string'
 });
 
+export const isoDateTimeStringSchema = isoTimestampSchema;
+
 export const baseSyncableEntitySchema = z.object({
   id: uuidSchema,
   updated_at: isoTimestampSchema,

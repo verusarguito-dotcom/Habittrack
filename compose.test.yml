@@ -1,0 +1,20 @@
+# compose.test.yml - PostgreSQL for local dev testing (dev laptop only)
+services:
+  test-db:
+    image: postgres:16-alpine
+    container_name: vibehabit-test-db
+    environment:
+      POSTGRES_USER: vibehabit_test
+      POSTGRES_PASSWORD: vibehabit_test_password
+      POSTGRES_DB: vibehabit_test
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./deploy/migrations:/docker-entrypoint-initdb.d:ro
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vibehabit_test -d vibehabit_test"]
+      interval: 3s
+      timeout: 3s
+      retries: 5

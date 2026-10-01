@@ -6,8 +6,17 @@ import {
   habitLogSchema,
   settingSchema,
   syncRequestSchema,
-  syncResponseSchema
+  syncResponseSchema,
+  clockSkewErrorResponseSchema,
+  outboxEntrySchema,
+  outboxActionSchema,
+  isoDateTimeStringSchema
 } from '../src/schemas/index.js';
+import type {
+  ClockSkewErrorResponse,
+  OutboxEntry,
+  OutboxAction
+} from '../src/types/index.js';
 
 describe('Domain Schemas Validation (T002)', () => {
   const validUuid = '123e4567-e89b-12d3-a456-426614174000';
@@ -269,6 +278,129 @@ describe('Domain Schemas Validation (T002)', () => {
       expect(parsed.applied.length).toBe(1);
       expect(parsed.rejected.length).toBe(1);
       expect(parsed.has_more).toBe(false);
+    });
+  });
+
+  describe('clockSkewErrorResponseSchema', () => {
+    it('validates a valid clock skew error response', () => {
+      const data: ClockSkewErrorResponse = {
+        error: 'CLOCK_SKEW',
+        message: 'Clock skew detected: client is 10 minutes ahead of server',
+        server_time: nowIso
+      };
+      const parsed = clockSkewErrorResponseSchema.parse(data);
+      expect(parsed.error).toBe('CLOCK_SKEW');
+      expect(parsed.message).toBe(data.message);
+      expect(parsed.server_time).toBe(nowIso);
+    });
+
+    it('rejects invalid error discriminator', () => {
+      const data = {
+        error: 'OTHER_ERROR',
+        message: 'Some error',
+        server_time: nowIso
+      };
+      expect(() => clockSkewErrorResponseSchema.parse(data)).toThrow();
+    });
+
+    it('rejects invalid server_time timestamp', () => {
+      const data = {
+        error: 'CLOCK_SKEW',
+        message: 'Skew detected',
+        server_time: 'not-a-valid-timestamp'
+      };
+      expect(() => clockSkewErrorResponseSchema.parse(data)).toThrow();
+    });
+
+    it('rejects missing fields', () => {
+      expect(() => clockSkewErrorResponseSchema.parse({ error: 'CLOCK_SKEW' })).toThrow();
+    });
+  });
+
+  describe('outboxEntrySchema', () => {
+    it('validates valid outbox entries for each action and table', () => {
+      const actions: OutboxAction[] = ['insert', 'update', 'delete'];
+      const tables = ['categories', 'habits', 'habit_schedules', 'logs', 'settings'] as const;
+
+      for (const action of actions) {
+        for (const table of tables) {
+          const entry: OutboxEntry = {
+            id: validUuid,
+            table,
+            record_id: validUuid,
+            action,
+            payload: { nama: 'Test', count: 42, active: true },
+            created_at: nowIso
+          };
+          const parsed = outboxEntrySchema.parse(entry);
+          expect(parsed.id).toBe(validUuid);
+          expect(parsed.table).toBe(table);
+          expect(parsed.action).toBe(action);
+          expect(parsed.record_id).toBe(validUuid);
+          expect(parsed.payload).toEqual({ nama: 'Test', count: 42, active: true });
+          expect(parsed.created_at).toBe(nowIso);
+        }
+      }
+    });
+
+    it('rejects invalid UUID in id', () => {
+      const entry = {
+        id: 'not-a-uuid',
+        table: 'habits',
+        record_id: validUuid,
+        action: 'insert',
+        payload: {},
+        created_at: nowIso
+      };
+      expect(() => outboxEntrySchema.parse(entry)).toThrow();
+    });
+
+    it('rejects invalid table name', () => {
+      const entry = {
+        id: validUuid,
+        table: 'unknown_table',
+        record_id: validUuid,
+        action: 'insert',
+        payload: {},
+        created_at: nowIso
+      };
+      expect(() => outboxEntrySchema.parse(entry)).toThrow();
+    });
+
+    it('rejects invalid action', () => {
+      const entry = {
+        id: validUuid,
+        table: 'habits',
+        record_id: validUuid,
+        action: 'upsert',
+        payload: {},
+        created_at: nowIso
+      };
+      expect(() => outboxEntrySchema.parse(entry)).toThrow();
+    });
+
+    it('rejects empty record_id', () => {
+      const entry = {
+        id: validUuid,
+        table: 'habits',
+        record_id: '',
+        action: 'insert',
+        payload: {},
+        created_at: nowIso
+      };
+      expect(() => outboxEntrySchema.parse(entry)).toThrow();
+    });
+
+    it('rejects invalid created_at timestamp', () => {
+      const entry = {
+        id: validUuid,
+        table: 'habits',
+        record_id: validUuid,
+        action: 'insert',
+        payload: {},
+        created_at: '2026-99-99T99:99:99Z'
+      };
+      expect(() => outboxEntrySchema.parse(entry)).toThrow();
     });
   });
 });

@@ -39,3 +39,20 @@ export interface SyncResponse {
   new_server_seq: number;
   has_more: boolean;
 }
+
+export interface ClockSkewErrorResponse {
+  error: 'CLOCK_SKEW';
+  message: string;
+  server_time: string; // ISO 8601
+}
+
+export type OutboxAction = 'insert' | 'update' | 'delete';
+
+export interface OutboxEntry {
+  id: string; // UUID
+  table: SyncTable;
+  record_id: string;
+  action: OutboxAction;
+  payload: Record<string, unknown>;
+  created_at: string; // ISO 8601
+}

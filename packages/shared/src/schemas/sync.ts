@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { uuidSchema, isoTimestampSchema, syncTableSchema } from './base.js';
+import { uuidSchema, isoTimestampSchema, isoDateTimeStringSchema, syncTableSchema } from './base.js';
 import { categorySchema } from './category.js';
 import { habitSchema } from './habit.js';
 import { habitScheduleSchema } from './schedule.js';
@@ -14,11 +14,33 @@ export const syncRecordSchema = z.union([
   settingSchema
 ]);
 
-export const syncMutationSchema = z.object({
-  mutation_id: uuidSchema.or(z.string().min(1)),
-  table: syncTableSchema,
-  record: syncRecordSchema
-});
+export const syncMutationSchema = z.discriminatedUnion('table', [
+  z.object({
+    mutation_id: uuidSchema.or(z.string().min(1)),
+    table: z.literal('categories'),
+    record: categorySchema
+  }),
+  z.object({
+    mutation_id: uuidSchema.or(z.string().min(1)),
+    table: z.literal('habits'),
+    record: habitSchema
+  }),
+  z.object({
+    mutation_id: uuidSchema.or(z.string().min(1)),
+    table: z.literal('habit_schedules'),
+    record: habitScheduleSchema
+  }),
+  z.object({
+    mutation_id: uuidSchema.or(z.string().min(1)),
+    table: z.literal('logs'),
+    record: habitLogSchema
+  }),
+  z.object({
+    mutation_id: uuidSchema.or(z.string().min(1)),
+    table: z.literal('settings'),
+    record: settingSchema
+  })
+]);
 
 export const syncRequestSchema = z.object({
   protocol_version: z.number().int().positive().default(1),
@@ -51,3 +73,24 @@ export type SyncRequestInput = z.input<typeof syncRequestSchema>;
 export type SyncRequestOutput = z.output<typeof syncRequestSchema>;
 export type SyncResponseInput = z.input<typeof syncResponseSchema>;
 export type SyncResponseOutput = z.output<typeof syncResponseSchema>;
+
+export const clockSkewErrorResponseSchema = z.object({
+  error: z.literal('CLOCK_SKEW'),
+  message: z.string(),
+  server_time: isoDateTimeStringSchema
+});
+
+export const outboxActionSchema = z.enum(['insert', 'update', 'delete']);
+
+export const outboxEntrySchema = z.object({
+  id: uuidSchema,
+  table: syncTableSchema,
+  record_id: z.string().min(1),
+  action: outboxActionSchema,
+  payload: z.record(z.unknown()),
+  created_at: isoDateTimeStringSchema
+});
+
+export type ClockSkewErrorResponseSchema = z.infer<typeof clockSkewErrorResponseSchema>;
+export type OutboxActionSchema = z.infer<typeof outboxActionSchema>;
+export type OutboxEntrySchema = z.infer<typeof outboxEntrySchema>;

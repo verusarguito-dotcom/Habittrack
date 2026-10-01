@@ -7,9 +7,18 @@
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
     "build": "tsc --noEmit",
-    "test:integration": "echo 'Integration test will run with docker compose test environment'"
+    "test:integration": "vitest run tests/integration.test.ts"
   },
   "dependencies": {
-    "@vibehabit/shared": "*"
+    "@fastify/static": "^10.1.5",
+    "@vibehabit/shared": "*",
+    "fastify": "^5.12.5",
+    "kysely": "^0.29.6",
+    "pg": "^8.23.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/pg": "^8.23.1"
   }
 }
