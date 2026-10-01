@@ -9,7 +9,7 @@
     "apps/server"
   ],
   "scripts": {
-    "typecheck": "npm run --workspaces --if-present typecheck",
+    "typecheck": "npm run --workspaces --if-present typecheck && tsc --noEmit -p tests/tsconfig.json",
     "lint": "npm run --workspaces --if-present lint",
     "build": "npm run --workspaces --if-present build",
     "test": "vitest run",
@@ -17,6 +17,7 @@
     "test:integration": "npm run --workspace=@vibehabit/server test:integration"
   },
   "devDependencies": {
+    "fake-indexeddb": "^6.2.5",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"
   }

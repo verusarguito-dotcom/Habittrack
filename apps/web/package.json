@@ -9,6 +9,7 @@
     "build": "tsc --noEmit"
   },
   "dependencies": {
-    "@vibehabit/shared": "*"
+    "@vibehabit/shared": "*",
+    "dexie": "^4.4.6"
   }
 }
