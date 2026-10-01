@@ -292,7 +292,9 @@ async function applyMutation(trx: Transaction<Database>, mutation: SyncMutation)
             id: setting.id,
             jam_mulai_hari: setting.jam_mulai_hari ?? '00:00',
             theme: setting.theme ?? 'system',
-            device_token_hash: setting.device_token_hash ?? null,
+            // SECURITY [VULN-2]: device_token_hash TIDAK disinkronkan ke server
+            // agar hash token auth tidak tersebar ke perangkat lain via sync
+            device_token_hash: null,
             updated_at: setting.updated_at,
             deleted_at: setting.deleted_at ?? null,
             device_id: setting.device_id,
@@ -307,7 +309,8 @@ async function applyMutation(trx: Transaction<Database>, mutation: SyncMutation)
             .set({
               jam_mulai_hari: setting.jam_mulai_hari ?? '00:00',
               theme: setting.theme ?? 'system',
-              device_token_hash: setting.device_token_hash ?? null,
+              // SECURITY [VULN-2]: device_token_hash TIDAK disinkronkan ke server
+              device_token_hash: null,
               updated_at: setting.updated_at,
               deleted_at: setting.deleted_at ?? null,
               device_id: setting.device_id,
@@ -494,6 +497,17 @@ export const syncRoutes: FastifyPluginAsync<SyncRouteOptions> = async (fastify, 
   fastify.post(
     '/sync',
     {
+      // VULN-3 SECURITY: Rate limiting — 60 request/menit per IP
+      config: {
+        rateLimit: {
+          max: 60,
+          timeWindow: '1 minute',
+          errorResponseBuilder: () => ({
+            error: 'RATE_LIMIT_EXCEEDED',
+            message: 'Too many sync requests. Please wait before retrying.'
+          })
+        }
+      },
       preHandler: createAuthPreHandler(deviceTokens)
     },
     async (request, reply) => {
@@ -566,9 +580,12 @@ export const syncRoutes: FastifyPluginAsync<SyncRouteOptions> = async (fastify, 
             message: 'Sync lock currently held by concurrent transaction'
           });
         }
+        // SECURITY [VULN-4]: Jangan bocorkan detail error DB mentah ke client
+        // Log detail di server, kirim pesan generik ke client
+        request.log.error({ err }, 'Sync transaction failed');
         return reply.status(500).send({
           error: 'TRANSACTION_FAILED',
-          message: err.message ?? 'Unknown transaction error'
+          message: 'Internal server error during sync transaction'
         });
       }
     }

@@ -4,9 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit && node scripts/build.js"
   },
   "dependencies": {
     "@vibehabit/shared": "*",
@@ -17,6 +20,9 @@
   },
   "devDependencies": {
     "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0"
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.6.1",
+    "tsx": "^4.23.15"
   }
 }

@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  vibehabit-db:
+    image: postgres:16-alpine
+    container_name: vibehabit-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vibehabit
+      POSTGRES_USER: vibehabit_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - vibehabit-net
+    # ARCH §4.3 Rule 2: Database port is NEVER published to host; accessible only by app container
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vibehabit_user -d vibehabit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  vibehabit-app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: vibehabit-app
+    restart: unless-stopped
+    depends_on:
+      vibehabit-db:
+        condition: service_healthy
+    # ARCH §4.3 Rule 1: Strictly bind to loopback 127.0.0.1:3001 (never 0.0.0.0 or un-bound 3001:3001)
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      NODE_ENV: production
+      HOST: 127.0.0.1
+      PORT: 3001
+      DATABASE_URL: postgresql://vibehabit_user:${POSTGRES_PASSWORD}@vibehabit-db:5432/vibehabit
+      DEVICE_TOKENS: ${DEVICE_TOKENS}
+      TRUST_PROXY: "true"
+      STATIC_DIST_PATH: /app/apps/web/dist
+    networks:
+      - vibehabit-net
+
+networks:
+  vibehabit-net:
+    driver: bridge
+
+volumes:
+  pgdata:

@@ -33,5 +33,8 @@ export * from './components/analytics/HabitPerformanceTable.js';
 export * from './components/data/ImportPreviewModal.js';
 export * from './components/data/BackupWarnings.js';
 export * from './components/data/DeviceTokenForm.js';
+export * from './components/pwa/ReloadPrompt.js';
+export * from './pwa/index.js';
 export * from './App.js';
+
 

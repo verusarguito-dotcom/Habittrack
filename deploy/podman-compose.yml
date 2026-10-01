@@ -1,0 +1,60 @@
+# deploy/podman-compose.yml
+# Jalankan dari root repo: podman-compose -f deploy/podman-compose.yml up -d
+# Pastikan file deploy/.env sudah ada (salin dari deploy/.env.example)
+
+services:
+  vibehabit-db:
+    image: postgres:16-alpine
+    container_name: vibehabit-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vibehabit
+      POSTGRES_USER: vibehabit_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      # Nama unik agar tidak bentrok dengan volume pgdata milik app lain di VPS
+      - vibehabit_pgdata:/var/lib/postgresql/data
+      # Jalankan migration otomatis saat container pertama kali dibuat
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    networks:
+      - vibehabit-net
+    # Port DB TIDAK di-publish ke host — hanya bisa diakses oleh vibehabit-app
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vibehabit_user -d vibehabit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  vibehabit-app:
+    build:
+      context: ..
+      dockerfile: deploy/Containerfile
+    container_name: vibehabit-app
+    restart: unless-stopped
+    depends_on:
+      vibehabit-db:
+        condition: service_healthy
+    # Port 3001 — tidak bentrok dengan job-tracker yang pakai 3000
+    # Bind ke 127.0.0.1 agar hanya bisa diakses via reverse proxy (nginx/caddy)
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      NODE_ENV: production
+      # Di dalam container, app harus listen 0.0.0.0 agar Podman bisa forward port
+      HOST: 0.0.0.0
+      PORT: 3001
+      DATABASE_URL: postgresql://vibehabit_user:${POSTGRES_PASSWORD}@vibehabit-db:5432/vibehabit
+      DEVICE_TOKENS: ${DEVICE_TOKENS}
+      TRUST_PROXY: "true"
+      STATIC_DIST_PATH: /app/apps/web/dist
+    networks:
+      - vibehabit-net
+
+networks:
+  # Nama unik dengan prefix vibehabit agar tidak bentrok dengan network app lain
+  vibehabit-net:
+    driver: bridge
+
+volumes:
+  # Nama eksplisit dengan prefix vibehabit agar tidak bentrok
+  vibehabit_pgdata:

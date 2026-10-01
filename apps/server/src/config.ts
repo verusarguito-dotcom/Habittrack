@@ -45,9 +45,12 @@ export const serverConfigSchema = z.object({
     .refine((tokens) => Object.keys(tokens).length > 0, {
       message: 'CONFIG_ERROR: DEVICE_TOKENS must contain at least one valid device entry'
     }),
-  host: z.string().default('127.0.0.1').refine((h) => h === '127.0.0.1', {
-    message: 'CONFIG_ERROR: Server must strictly bind to 127.0.0.1'
-  }),
+  host: z.string().default('127.0.0.1').refine(
+    (h) => h === '127.0.0.1' || (h === '0.0.0.0' && (process.env.CONTAINER === 'true' || process.env.IS_CONTAINER === 'true')),
+    {
+      message: 'CONFIG_ERROR: Server must strictly bind to 127.0.0.1'
+    }
+  ),
   port: z.coerce.number().int().min(1).max(65535).default(3001),
   nodeEnv: z.string().default(process.env.NODE_ENV || 'development'),
   staticDistPath: z.string().default(() => path.resolve(process.cwd(), 'apps/web/dist'))

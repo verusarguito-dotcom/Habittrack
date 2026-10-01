@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
+import fastifyHelmet from '@fastify/helmet';
+import fastifyRateLimit from '@fastify/rate-limit';
 import type { Kysely } from 'kysely';
 import type { Database } from './db/types.js';
 import { loadConfigFromEnv, validateServerConfig, type ServerConfig } from './config.js';
@@ -21,6 +23,27 @@ export async function buildApp(options: AppOptions = {}): Promise<FastifyInstanc
 
   const app = Fastify({
     logger: config.nodeEnv === 'development'
+  });
+
+  // INFO-2 SECURITY: Security headers via helmet
+  // CSP, X-Frame-Options, X-Content-Type-Options, dll
+  await app.register(fastifyHelmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:'],
+        connectSrc: ["'self'"],
+        workerSrc: ["'self'", 'blob:']
+      }
+    }
+  });
+
+  // VULN-3 SECURITY: Rate limiting untuk mencegah flood request
+  // 60 request per menit per IP — cukup untuk sync normal, mencegah abuse
+  await app.register(fastifyRateLimit, {
+    global: false  // hanya aktif pada route yang didaftarkan secara eksplisit
   });
 
   // Health check routes

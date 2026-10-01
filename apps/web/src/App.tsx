@@ -9,6 +9,7 @@ import { AnalyticsDashboard } from './pages/AnalyticsDashboard.js';
 import { DataManagement } from './pages/DataManagement.js';
 import { getOrCreateDeviceId } from './utils/device.js';
 import { observeOutboxCount } from './db/hooks.js';
+import { ReloadPrompt } from './components/pwa/ReloadPrompt.js';
 
 export interface AppProps {
   db?: VibeHabitDatabase;
@@ -53,6 +54,7 @@ export const App: React.FC<AppProps> = ({
         {currentTab === 'data' && (
           <DataManagement db={db} deviceId={deviceId} onTriggerSync={onTriggerSync} />
         )}
+        <ReloadPrompt autoRegister={true} />
       </AppLayout>
     </ThemeProvider>
   );

@@ -4,12 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "tsx --env-file=.env watch src/index.ts",
+    "start": "tsx --env-file=.env src/index.ts",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
     "build": "tsc --noEmit",
     "test:integration": "vitest run tests/integration.test.ts"
   },
   "dependencies": {
+    "@fastify/helmet": "^13.1.1",
+    "@fastify/rate-limit": "^11.2.0",
     "@fastify/static": "^10.1.5",
     "@vibehabit/shared": "*",
     "fastify": "^5.12.5",
@@ -19,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
-    "@types/pg": "^8.23.1"
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15"
   }
 }

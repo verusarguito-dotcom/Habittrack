@@ -39,7 +39,7 @@ describe('apps/server - Server Configuration & Validation', () => {
     }).toThrow(/DEVICE_TOKENS must contain at least one valid device entry/);
   });
 
-  it('fails fast when binding host is not 127.0.0.1', () => {
+  it('fails fast when binding host is not 127.0.0.1 outside container', () => {
     expect(() => {
       validateServerConfig({
         databaseUrl: 'postgresql://localhost:5432/db',
@@ -47,6 +47,22 @@ describe('apps/server - Server Configuration & Validation', () => {
         host: '0.0.0.0'
       });
     }).toThrow(/strictly bind to 127.0.0.1/);
+  });
+
+  it('permits 0.0.0.0 binding inside container environment (CONTAINER=true)', () => {
+    const prev = process.env.CONTAINER;
+    try {
+      process.env.CONTAINER = 'true';
+      const config = validateServerConfig({
+        databaseUrl: 'postgresql://localhost:5432/db',
+        deviceTokens: { d1: 'h1' },
+        host: '0.0.0.0'
+      });
+      expect(config.host).toBe('0.0.0.0');
+    } finally {
+      if (prev !== undefined) process.env.CONTAINER = prev;
+      else delete process.env.CONTAINER;
+    }
   });
 
   it('accepts valid configuration and provides defaults', () => {
