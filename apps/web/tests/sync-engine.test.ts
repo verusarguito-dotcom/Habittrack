@@ -319,4 +319,89 @@ describe('Iterative Sync Engine & Local LWW Merge (T010)', () => {
     expect(engine.getSyncState()).toBe('Server tidak terjangkau (Tailscale aktif?)');
     expect(engine.getRetryAttempt()).toBe(1);
   });
+
+  it('records server_seq on local Dexie records when server echoes applied changes', async () => {
+    const habitId = 'h-server-seq-test';
+    const habit: Habit = {
+      id: habitId,
+      nama: 'Testing Server Seq',
+      category_id: null,
+      mode: 'checklist',
+      satuan: null,
+      archived: false,
+      created_date: '2026-09-01',
+      updated_at: '2026-09-29T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-client-1'
+    };
+    await saveHabit(db, habit, 'dev-client-1');
+
+    const transport: SyncTransport = {
+      send: async (req): Promise<{ status: number; body: any }> => {
+        const res: SyncResponse = {
+          server_time: '2026-09-29T12:00:00.000Z',
+          applied: req.mutations.map((m) => m.mutation_id),
+          rejected: [],
+          changes: [
+            {
+              table: 'habits',
+              record: {
+                ...habit,
+                server_seq: 77
+              }
+            }
+          ],
+          new_server_seq: 77,
+          has_more: false
+        };
+        return { status: 200, body: res };
+      }
+    };
+
+    const engine = new SyncEngine({
+      db,
+      deviceId: 'dev-client-1',
+      authToken: 'token-secret',
+      transport
+    });
+
+    const result = await engine.sync();
+    expect(result.success).toBe(true);
+
+    const savedHabit = await db.habits.get(habitId);
+    expect(savedHabit?.server_seq).toBe(77);
+  });
+
+  it('safely handles concurrent sync() calls by deduplicating overlapping executions', async () => {
+    let sendCalls = 0;
+    const transport: SyncTransport = {
+      send: async (): Promise<{ status: number; body: any }> => {
+        sendCalls++;
+        await new Promise((r) => setTimeout(r, 50));
+        return {
+          status: 200,
+          body: {
+            server_time: '2026-09-29T12:00:00.000Z',
+            applied: [],
+            rejected: [],
+            changes: [],
+            new_server_seq: 1,
+            has_more: false
+          }
+        };
+      }
+    };
+
+    const engine = new SyncEngine({
+      db,
+      deviceId: 'dev-client-1',
+      authToken: 'token-secret',
+      transport
+    });
+
+    const [res1, res2] = await Promise.all([engine.sync(), engine.sync()]);
+    expect(res1.success).toBe(true);
+    expect(res2.success).toBe(true);
+    expect(sendCalls).toBe(1); // Only 1 request was sent concurrently!
+  });
 });

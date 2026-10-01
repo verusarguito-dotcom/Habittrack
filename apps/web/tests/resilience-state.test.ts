@@ -11,6 +11,13 @@ describe('Network Resilience, Backoff & UI State Machine (T010)', () => {
   it('caps exponential backoff strictly at 60,000ms for large attempt numbers (e.g. attempt 20)', () => {
     const backoffLarge = calculateBackoffMs(20, 0);
     expect(backoffLarge).toBe(60000);
+
+    // With jitter, it must still never breach 60,000ms ceiling
+    const withJitter = calculateBackoffMs(20, 0.5);
+    expect(withJitter).toBe(60000);
+
+    const withDefaultJitter = calculateBackoffMs(20);
+    expect(withDefaultJitter).toBeLessThanOrEqual(60000);
   });
 
   it('ensures jitter adds non-negative random perturbation', () => {

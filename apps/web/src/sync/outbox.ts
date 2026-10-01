@@ -1,4 +1,5 @@
 import type { SyncMutation } from '@vibehabit/shared';
+import { compareLww, doesIncomingWinLww } from '@vibehabit/shared';
 import type { OutboxItem } from '../db/types.js';
 
 function generateUuid(): string {
@@ -15,7 +16,7 @@ function generateUuid(): string {
 /**
  * Coalesces pending outbox mutations per entity record.
  * Multiple offline edits/tombstones to the same record coalesce into a single winning mutation
- * with predecessor ID tracking for atomic confirmation cleanup.
+ * determined via LWW with predecessor ID tracking for atomic confirmation cleanup.
  */
 export function coalesceOutbox(outboxItems: OutboxItem[]): {
   mutations: SyncMutation[];
@@ -37,9 +38,20 @@ export function coalesceOutbox(outboxItems: OutboxItem[]): {
   const outboxItemMap = new Map<string, string[]>();
 
   for (const [, items] of grouped.entries()) {
-    const latestItem = items[items.length - 1]!;
+    let latestItem = items[0]!;
+    for (let i = 1; i < items.length; i++) {
+      const candidate = items[i]!;
+      if (doesIncomingWinLww(candidate.record, latestItem.record)) {
+        latestItem = candidate;
+      } else if (compareLww(candidate.record, latestItem.record) === 0) {
+        if (candidate.created_at >= latestItem.created_at) {
+          latestItem = candidate;
+        }
+      }
+    }
+
     const mutationId = generateUuid();
-    const allOutboxIds = items.flatMap((i) => [i.id, ...i.predecessor_ids]);
+    const allOutboxIds = Array.from(new Set(items.flatMap((i) => [i.id, ...i.predecessor_ids])));
 
     mutations.push({
       mutation_id: mutationId,

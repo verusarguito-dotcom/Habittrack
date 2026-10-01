@@ -141,4 +141,98 @@ describe('Outbox Mutation Queue & Batch Coalescing (T010)', () => {
     expect(tables).toContain('habits');
     expect(tables).toContain('logs');
   });
+
+  it('guarantees LWW winning mutation is chosen regardless of input array order (e.g. random UUID order)', () => {
+    const habitId = 'h-lww-order-test';
+    const olderRecord: Habit = {
+      id: habitId,
+      nama: 'Older Name',
+      category_id: null,
+      mode: 'checklist',
+      satuan: null,
+      archived: false,
+      created_date: '2026-09-01',
+      updated_at: '2026-09-29T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    const newerRecord: Habit = {
+      ...olderRecord,
+      nama: 'Newer Winning Name',
+      updated_at: '2026-09-29T10:05:00.000Z'
+    };
+
+    // Simulate items returned by IndexedDB primary key index where older record has a later UUID
+    const itemsInReverseOrder: OutboxItem[] = [
+      {
+        id: '00000000-newer',
+        table: 'habits',
+        record_id: habitId,
+        action: 'update',
+        record: newerRecord,
+        predecessor_ids: [],
+        created_at: '2026-09-29T10:05:00.000Z'
+      },
+      {
+        id: 'zzzzzzzz-older',
+        table: 'habits',
+        record_id: habitId,
+        action: 'insert',
+        record: olderRecord,
+        predecessor_ids: [],
+        created_at: '2026-09-29T10:00:00.000Z'
+      }
+    ];
+
+    const { mutations } = coalesceOutbox(itemsInReverseOrder);
+    expect(mutations.length).toBe(1);
+    expect((mutations[0]!.record as Habit).nama).toBe('Newer Winning Name');
+  });
+
+  it('coalesces offline edit and cascading delete tombstone into winning delete mutation', () => {
+    const habitId = 'h-tomb-coalesce';
+    const activeHabit: Habit = {
+      id: habitId,
+      nama: 'Before Delete',
+      category_id: null,
+      mode: 'checklist',
+      satuan: null,
+      archived: false,
+      created_date: '2026-09-01',
+      updated_at: '2026-09-29T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    const tombstoneHabit: Habit = {
+      ...activeHabit,
+      updated_at: '2026-09-29T10:10:00.000Z',
+      deleted_at: '2026-09-29T10:10:00.000Z'
+    };
+
+    // Even if active mutation is placed last in array
+    const items: OutboxItem[] = [
+      {
+        id: '1-tombstone',
+        table: 'habits',
+        record_id: habitId,
+        action: 'delete',
+        record: tombstoneHabit,
+        predecessor_ids: [],
+        created_at: '2026-09-29T10:10:00.000Z'
+      },
+      {
+        id: '2-active',
+        table: 'habits',
+        record_id: habitId,
+        action: 'insert',
+        record: activeHabit,
+        predecessor_ids: [],
+        created_at: '2026-09-29T10:00:00.000Z'
+      }
+    ];
+
+    const { mutations } = coalesceOutbox(items);
+    expect(mutations.length).toBe(1);
+    expect((mutations[0]!.record as Habit).deleted_at).toBe('2026-09-29T10:10:00.000Z');
+  });
 });

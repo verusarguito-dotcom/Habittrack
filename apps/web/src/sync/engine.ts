@@ -4,7 +4,7 @@ import type {
   SyncTable,
   SyncableRecord
 } from '@vibehabit/shared';
-import { doesIncomingWinLww } from '@vibehabit/shared';
+import { doesIncomingWinLww, compareLww } from '@vibehabit/shared';
 import type { VibeHabitDatabase } from '../db/database.js';
 import type { HabitLog } from '@vibehabit/shared';
 import { coalesceOutbox } from './outbox.js';
@@ -59,6 +59,7 @@ export class SyncEngine {
   private lastServerSeq = 0;
   private retryAttempt = 0;
   private stateMachine: SyncStateMachine;
+  private activeSyncPromise: Promise<SyncResult> | null = null;
 
   constructor(options: SyncEngineOptions) {
     this.db = options.db;
@@ -109,8 +110,21 @@ export class SyncEngine {
 
   /**
    * Iterative sync pull/push loop until has_more == false and outbox is drained (PRD §8.2 & ARCHITECTURE §6.4).
+   * Guarded against concurrent re-entrant execution.
    */
   public async sync(): Promise<SyncResult> {
+    if (this.activeSyncPromise) {
+      return await this.activeSyncPromise;
+    }
+    this.activeSyncPromise = this.executeSync();
+    try {
+      return await this.activeSyncPromise;
+    } finally {
+      this.activeSyncPromise = null;
+    }
+  }
+
+  private async executeSync(): Promise<SyncResult> {
     let loops = 0;
     const maxLoops = 20;
     const token = await this.getResolvedAuthToken();
@@ -204,16 +218,26 @@ export class SyncEngine {
             );
 
             if (pendingForRecord.length > 0) {
-              // Compare server record against latest uncommitted local mutation
-              const latestLocal = pendingForRecord[pendingForRecord.length - 1]!.record;
+              // Find latest uncommitted local mutation via LWW comparison
+              let latestLocal = pendingForRecord[0]!.record;
+              for (let i = 1; i < pendingForRecord.length; i++) {
+                const candidate = pendingForRecord[i]!.record;
+                if (doesIncomingWinLww(candidate, latestLocal)) {
+                  latestLocal = candidate;
+                }
+              }
               if (doesIncomingWinLww(record, latestLocal)) {
                 await this.applyRecordToTable(table, record);
               }
               // If local wins, preserve uncommitted local record
             } else {
               // No pending mutation: apply if server change strictly wins over local
+              // OR if incoming matches existing local revision (e.g. server-assigned server_seq)
               const existingLocal = await this.getRecordFromTable(table, record.id);
-              if (doesIncomingWinLww(record, existingLocal)) {
+              if (
+                doesIncomingWinLww(record, existingLocal) ||
+                (existingLocal && compareLww(record, existingLocal) === 0)
+              ) {
                 await this.applyRecordToTable(table, record);
               }
             }

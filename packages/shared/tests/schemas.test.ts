@@ -10,7 +10,8 @@ import {
   clockSkewErrorResponseSchema,
   outboxEntrySchema,
   outboxActionSchema,
-  isoDateTimeStringSchema
+  isoDateTimeStringSchema,
+  backupDataSchema
 } from '../src/schemas/index.js';
 import type {
   ClockSkewErrorResponse,
@@ -401,6 +402,86 @@ describe('Domain Schemas Validation (T002)', () => {
         created_at: '2026-99-99T99:99:99Z'
       };
       expect(() => outboxEntrySchema.parse(entry)).toThrow();
+    });
+  });
+
+  describe('backupDataSchema (T015 Data Portability)', () => {
+    it('validates a complete structured backup snapshot', () => {
+      const backup = {
+        version: 1,
+        exported_at: nowIso,
+        app_version: '0.1.0',
+        device_id: 'device-laptop-1',
+        data: {
+          categories: [
+            {
+              id: validUuid,
+              nama: 'Kesehatan',
+              updated_at: nowIso,
+              deleted_at: null,
+              device_id: 'device-laptop-1'
+            }
+          ],
+          habits: [
+            {
+              id: validUuid,
+              nama: 'Meditasi',
+              category_id: validUuid,
+              mode: 'checklist',
+              satuan: null,
+              archived: false,
+              created_date: '2026-09-01',
+              updated_at: nowIso,
+              deleted_at: null,
+              device_id: 'device-laptop-1'
+            }
+          ],
+          habit_schedules: [
+            {
+              id: validUuid,
+              habit_id: validUuid,
+              tipe_frekuensi: 'daily',
+              hari_terjadwal: null,
+              jumlah_per_minggu: null,
+              target: null,
+              effective_from: '2026-09-01',
+              updated_at: nowIso,
+              deleted_at: null,
+              device_id: 'device-laptop-1'
+            }
+          ],
+          logs: [
+            {
+              id: validUuid,
+              habit_id: validUuid,
+              tanggal: '2026-09-20',
+              nilai: null,
+              selesai: true,
+              updated_at: nowIso,
+              deleted_at: null,
+              device_id: 'device-laptop-1'
+            }
+          ],
+          settings: []
+        }
+      };
+
+      const parsed = backupDataSchema.parse(backup);
+      expect(parsed.version).toBe(1);
+      expect(parsed.data.habits).toHaveLength(1);
+      expect(parsed.data.categories).toHaveLength(1);
+      expect(parsed.data.logs).toHaveLength(1);
+    });
+
+    it('rejects backup with invalid version or malformed data records', () => {
+      const invalidBackup = {
+        version: 0, // must be >= 1
+        exported_at: 'invalid-date',
+        data: {
+          habits: [{ id: 'not-a-uuid' }]
+        }
+      };
+      expect(() => backupDataSchema.parse(invalidBackup)).toThrow();
     });
   });
 });

@@ -10,6 +10,13 @@
   },
   "dependencies": {
     "@vibehabit/shared": "*",
-    "dexie": "^4.4.6"
+    "dexie": "^4.4.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^3.4.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
   }
 }

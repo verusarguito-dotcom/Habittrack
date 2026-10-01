@@ -11,9 +11,16 @@ import {
   queryHabits,
   queryHabitSchedules,
   queryLogsByHabit,
+  queryLogsByDateRange,
+  getHabit,
+  getCategory,
+  deleteCategory,
+  deleteHabitSchedule,
+  deleteHabitLog,
   getSetting
 } from '../src/db/operations.js';
 import type { Habit, HabitSchedule, HabitLog, Category, Setting } from '@vibehabit/shared';
+import { generateLogId } from '@vibehabit/shared';
 
 describe('Reactive CRUD Operations & Cascading Tombstones (T009)', () => {
   let db: VibeHabitDatabase;
@@ -241,5 +248,140 @@ describe('Reactive CRUD Operations & Cascading Tombstones (T009)', () => {
     const loadedSetting = await getSetting(db);
     expect(loadedSetting?.jam_mulai_hari).toBe('04:00');
     expect(loadedSetting?.theme).toBe('dark');
+  });
+
+  it('enqueues outbox mutation with action "update" when modifying an existing habit', async () => {
+    const habit: Habit = {
+      id: 'h-update-test',
+      nama: 'Initial Name',
+      category_id: null,
+      mode: 'checklist',
+      satuan: null,
+      archived: false,
+      created_date: '2026-09-01',
+      updated_at: '2026-09-01T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    await saveHabit(db, habit, 'dev-1');
+    const firstOutbox = await db.outbox.toArray();
+    expect(firstOutbox.length).toBe(1);
+    expect(firstOutbox[0]!.action).toBe('insert');
+
+    // Update habit
+    await saveHabit(db, { ...habit, nama: 'Updated Name' }, 'dev-1');
+    const allOutbox = await db.outbox.toArray();
+    expect(allOutbox.length).toBe(2);
+    expect(allOutbox.some((item) => item.action === 'insert')).toBe(true);
+    expect(allOutbox.some((item) => item.action === 'update')).toBe(true);
+    const insertItem = allOutbox.find((item) => item.action === 'insert');
+    expect((insertItem?.record as Habit)?.nama).toBe('Initial Name');
+    const updateItem = allOutbox.find((item) => item.action === 'update');
+    expect((updateItem?.record as Habit)?.nama).toBe('Updated Name');
+  });
+
+  it('generates deterministic UUID v5 log ID if log.id is omitted or empty', async () => {
+    const logWithoutId = {
+      id: '',
+      habit_id: '00000000-0000-4000-8000-000000000001',
+      tanggal: '2026-09-29',
+      nilai: 1,
+      selesai: true,
+      updated_at: '2026-09-29T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    await saveHabitLog(db, logWithoutId, 'dev-1');
+
+    const expectedId = generateLogId(logWithoutId.habit_id, logWithoutId.tanggal);
+    const savedLog = await db.logs.get(expectedId);
+    expect(savedLog).toBeDefined();
+    expect(savedLog?.id).toBe(expectedId);
+  });
+
+  it('supports single-entity soft deletes for category, schedule, and log', async () => {
+    const cat: Category = {
+      id: 'cat-del',
+      nama: 'Temp Category',
+      updated_at: '2026-09-01T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    await saveCategory(db, cat, 'dev-1');
+    await deleteCategory(db, 'cat-del', 'dev-1');
+    expect(await getCategory(db, 'cat-del')).toBeUndefined();
+
+    const sch: HabitSchedule = {
+      id: 'sch-del',
+      habit_id: 'h-1',
+      tipe_frekuensi: 'daily',
+      hari_terjadwal: null,
+      jumlah_per_minggu: null,
+      target: 1,
+      effective_from: '2026-09-01',
+      updated_at: '2026-09-01T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    await saveHabitSchedule(db, sch, 'dev-1');
+    await deleteHabitSchedule(db, 'sch-del', 'dev-1');
+    const schInDb = await db.habit_schedules.get('sch-del');
+    expect(schInDb?.deleted_at).not.toBeNull();
+
+    const log: HabitLog = {
+      id: 'log-del',
+      habit_id: 'h-1',
+      tanggal: '2026-09-29',
+      nilai: 1,
+      selesai: true,
+      updated_at: '2026-09-29T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    await saveHabitLog(db, log, 'dev-1');
+    await deleteHabitLog(db, 'log-del', 'dev-1');
+    const logInDb = await db.logs.get('log-del');
+    expect(logInDb?.deleted_at).not.toBeNull();
+  });
+
+  it('queries logs by inclusive date range correctly', async () => {
+    const l1: HabitLog = {
+      id: 'log-r1',
+      habit_id: 'h-range',
+      tanggal: '2026-09-10',
+      nilai: 1,
+      selesai: true,
+      updated_at: '2026-09-10T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    const l2: HabitLog = {
+      id: 'log-r2',
+      habit_id: 'h-range',
+      tanggal: '2026-09-15',
+      nilai: 1,
+      selesai: true,
+      updated_at: '2026-09-15T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+    const l3: HabitLog = {
+      id: 'log-r3',
+      habit_id: 'h-range',
+      tanggal: '2026-09-25',
+      nilai: 1,
+      selesai: true,
+      updated_at: '2026-09-25T10:00:00.000Z',
+      deleted_at: null,
+      device_id: 'dev-1'
+    };
+
+    await saveHabitLog(db, l1, 'dev-1');
+    await saveHabitLog(db, l2, 'dev-1');
+    await saveHabitLog(db, l3, 'dev-1');
+
+    const rangeResults = await queryLogsByDateRange(db, '2026-09-12', '2026-09-20');
+    expect(rangeResults.length).toBe(1);
+    expect(rangeResults[0]!.id).toBe('log-r2');
   });
 });

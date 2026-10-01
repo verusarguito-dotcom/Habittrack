@@ -44,16 +44,16 @@ Sebelum memulai pekerjaan:
 
 | ID | Task | Derived from (PRD feature) | Priority | Status | Notes |
 | :--- | :--- | :--- | :---: | :---: | :--- |
-| **T011** | Konfigurasi styling Tailwind CSS dan integrasi token CSS variables dari `DESIGN_SYSTEM.md` di `apps/web`, termasuk implementasi toggle tema (Light / Dark / System) dengan penyimpanan state di IndexedDB. | Design System (DESIGN_SYSTEM.md) | P0 | todo | Fondasi modular siap menerima aset desain `.zip`. |
-| **T012** | Bangun layout navigasi utama (Bottom bar untuk mobile, sidebar untuk desktop) dan halaman **"Hari Ini" (Daily Check-in)**: pemilih tanggal (termasuk tanggal lampau), daftar habit aktif, input centang checklist dan input kuantitatif (+/-), serta kalkulasi streak instan. | Daily Check-in & Flow 1 (PRD 6 & 9) | P0 | todo | Interaksi instan nol-latensi langsung ke Dexie. |
-| **T013** | Bangun halaman **"Kelola Habit"**: form tambah/edit habit, pemilihan kategori, konfigurasi frekuensi (harian, hari tertentu, X/minggu), opsi arsip, dan aksi hapus permanen dengan pembuatan tombstone berantai untuk anak entitas. | Habit CRUD & Kategori (PRD 6, 7.5, 8.1 & 9) | P0 | todo | Konfirmasi dialog wajib sebelum menghapus habit permanen. |
+| **T011** | Konfigurasi styling Tailwind CSS dan integrasi token CSS variables dari `DESIGN_SYSTEM.md` di `apps/web`, termasuk implementasi toggle tema (Light / Dark / System) dengan penyimpanan state di IndexedDB. | Design System (DESIGN_SYSTEM.md) | P0 | done | Fondasi modular siap menerima aset desain `.zip`. |
+| **T012** | Bangun layout navigasi utama (Bottom bar untuk mobile, sidebar untuk desktop) dan halaman **"Hari Ini" (Daily Check-in)**: pemilih tanggal (termasuk tanggal lampau), daftar habit aktif, input centang checklist dan input kuantitatif (+/-), serta kalkulasi streak instan. | Daily Check-in & Flow 1 (PRD 6 & 9) | P0 | done | Interaksi instan nol-latensi langsung ke Dexie. |
+| **T013** | Bangun halaman **"Kelola Habit"**: form tambah/edit habit, pemilihan kategori, konfigurasi frekuensi (harian, hari tertentu, X/minggu), opsi arsip, dan aksi hapus permanen dengan pembuatan tombstone berantai untuk anak entitas. | Habit CRUD & Kategori (PRD 6, 7.5, 8.1 & 9) | P0 | done | Konfirmasi dialog wajib sebelum menghapus habit permanen. |
 
 ### Milestone 5: Analytics Dashboard & Data Management (`apps/web`)
 
 | ID | Task | Derived from (PRD feature) | Priority | Status | Notes |
 | :--- | :--- | :--- | :---: | :---: | :--- |
-| **T014** | Bangun halaman **"Analytics Dashboard"**: grafik garis tren mingguan/bulanan konsistensi (Recharts), metrik rasio keberhasilan (%), kartu ringkasan kategori, dan kalender kontribusi heatmap berbasis CSS Grid murni. | Analytics Dashboard (PRD 6, 7.4, 7.6 & ARCH 2) | P0 | todo | Waktu render dashboard < 1 detik untuk rentang data bulanan. |
-| **T015** | Bangun halaman **"Data & Pengaturan"**: fitur Export JSON lengkap, fitur Import/Restore JSON dengan modal ringkasan (jumlah habit & log) sebelum eksekusi, form pengaturan Device Token, dan indikator peringatan jika sync > 7 hari atau backup > 30 hari. | Export/Import JSON & Backup (PRD 6, 8.3, 8.4 & ARCH 9) | P0 | todo | Fitur proteksi data lapisan 4 untuk pemulihan bencana. |
+| **T014** | Bangun halaman **"Analytics Dashboard"**: grafik garis tren mingguan/bulanan konsistensi (Recharts), metrik rasio keberhasilan (%), kartu ringkasan kategori, dan kalender kontribusi heatmap berbasis CSS Grid murni. | Analytics Dashboard (PRD 6, 7.4, 7.6 & ARCH 2) | P0 | done | Waktu render dashboard < 1 detik untuk rentang data bulanan. |
+| **T015** | Bangun halaman **"Data & Pengaturan"**: fitur Export JSON lengkap, fitur Import/Restore JSON dengan modal ringkasan (jumlah habit & log) sebelum eksekusi, form pengaturan Device Token, dan indikator peringatan jika sync > 7 hari atau backup > 30 hari. | Export/Import JSON & Backup (PRD 6, 8.3, 8.4 & ARCH 9) | P0 | done | Fitur proteksi data lapisan 4 untuk pemulihan bencana. |
 
 ### Milestone 6: PWA Offline Shell, Hardening & Deployment
 

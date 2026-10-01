@@ -246,3 +246,150 @@ Catat entri baru pada berkas ini setiap kali:
     * Memastikan transaksi atomik Dexie membungkus pembersihan outbox dan merge perubahan server sekaligus untuk mencegah ketidakkonsistenan state jika terjadi kegagalan di tengah proses.
 - **Deviation from plan (if any):** Tidak ada deviasi.
 - **Upstream doc update needed?** Tidak ada.
+
+### 2026-10-01 — Milestone 3 Hardening & Adversarial Review Verification
+- **What was fixed and hardened:**
+  - **1. Perbaikan Kritis LWW Coalescing Outbox (`apps/web/src/sync/outbox.ts`):**
+    * Masalah: `coalesceOutbox` sebelumnya mengasumsikan item outbox berurutan kronologis dan mengambil `items[items.length - 1]`. Karena Dexie `toArray()` mengembalikan item berdasarkan primary key `id` (UUID acak), urutan item acak sehingga mutasi lama atau status aktif sebelum tombstone dapat salah terpilih sebagai pemenang.
+    * Solusi: Menggunakan reduksi LWW (`compareLww`, `doesIncomingWinLww`) eksplisit untuk memilih mutasi pemenang sejati per record, serta mendeduplikasi ID predecessor.
+  - **2. Perbaikan Merge LWW Lokal (`apps/web/src/sync/engine.ts`):**
+    * Masalah: Saat membandingkan perubahan server dengan mutasi outbox lokal yang belum dikirim (`pendingForRecord`), `engine` sebelumnya mengambil elemen terakhir array acak. Diperbaiki dengan reduksi LWW untuk menjamin record uncommitted lokal terbaru yang dibandingkan.
+    * Masalah: Saat record server hasil sync dikembalikan (di mana `compareLww === 0` karena timestamp dan device_id identik), record tersebut diabaikan sehingga `server_seq` tidak pernah tersimpan di Dexie. Diperbaiki agar saat `compareLww === 0` dan tidak ada mutasi outbox lokal tertunda, record diperbarui sehingga `server_seq` resmi tercatat di Dexie.
+  - **3. Batas Plafon Backoff Jitter (`apps/web/src/sync/backoff.ts`):**
+    * Masalah: Jitter ditambahkan setelah capping `expMs`, sehingga pada attempt tinggi (e.g. attempt 20) dengan jitter 10%, nilai backoff mencapai 66.000ms (melebihi plafon ketat 60.000ms di PRD §8.2 & ARCHITECTURE §6.4).
+    * Solusi: Nilai hasil akhir dijepit secara ketat dengan `Math.min(maxMs, ...)`.
+  - **4. Semantik Mutasi Outbox & ID Log Deterministik (`apps/web/src/db/operations.ts`):**
+    * Memperbaiki penentuan aksi outbox (`'insert'` vs `'update'`) pada `saveCategory`, `saveHabit`, `saveHabitSchedule`, `saveHabitLog`, dan `saveSetting` berdasarkan keberadaan data di IndexedDB.
+    * Menjamin `saveHabitLog` otomatis menghasilkan UUID v5 deterministik (`generateLogId(habit_id, tanggal)`) saat `log.id` kosong.
+    * Menambahkan fungsi pembantu CRUD lengkap: `getHabit`, `getCategory`, `deleteCategory`, `deleteHabitSchedule`, `deleteHabitLog`, serta `queryLogsByDateRange` untuk mendukung query rentang tanggal kalender & analitik.
+  - **5. Concurrency Guard pada SyncEngine (`apps/web/src/sync/engine.ts`):**
+    * Menambahkan proteksi re-entrancy / mutex `activeSyncPromise` pada `SyncEngine.sync()` agar pemanggilan konkuren simultan tidak memicu duplikasi pengiriman mutasi atau tabrakan transaksi.
+  - **6. Pengujian Observabel Reaktif (`apps/web/tests/hooks.test.ts`):**
+    * Menambahkan suite pengujian komprehensif untuk `observeHabits`, `observeHabit`, `observeLogsForDate`, `observeLogsForDateRange`, `observeLogsForHabitAndDate`, `observeHabitSchedules`, `observeCategories`, `observeSetting`, dan `observeOutboxCount`.
+  - **7. Optimasi Runner Vitest (`vitest.config.ts`):**
+    * Menetapkan `pool: 'threads'` di `vitest.config.ts` untuk menghindari eksit worker mendadak dan kegagalan alokasi memori process (`out of memory`) di lingkungan Node.js Windows dengan keterbatasan RAM bebas.
+  - **8. Eliminasi Flake Index Outbox pada Test Suite (`apps/web/tests/crud-cascade.test.ts`):**
+    * Masalah: Pada tes modifikasi habit, assertion `expect(allOutbox[1]!.action).toBe('update')` mengasumsikan urutan array tetap. Karena Dexie `toArray()` mengembalikan record berurutan berdasarkan primary key `id` (string UUID acak), mutasi update terkadang berada di indeks 0 atau 1 tergantung leksikografis UUID.
+    * Solusi: Diperbarui agar memverifikasi keberadaan mutasi secara deterministik via `allOutbox.some(item => item.action === 'insert')`, `allOutbox.some(item => item.action === 'update')`, serta memvalidasi kesesuaian payload record habit yang diperbarui.
+- **Hasil Verifikasi Penuh (Zero Regression):**
+  * `npm test`: 380 tests lulus 100% lintas 51 test files di Vitest (14s) dengan 0 flake.
+  * `npm run test:integration`: 33 tests lulus 100%.
+  * `npm run typecheck`: 0 error lintas seluruh workspace.
+  * `npm run lint`: 0 error linting.
+  * `npm run build`: Kompilasi produksi lulus 100%.
+- **Decisions made and why:**
+  * Memperbaiki seluruh kelemahan edge cases dan memastikan jaminan kekokohan data model lokal dan sinkronisasi client sebelum lanjut ke Milestone 4 UI.
+- **Deviation from plan (if any):** Tidak ada deviasi.
+- **Upstream doc update needed?** Tidak ada.
+
+### 2026-10-01 — Milestone 4: Daily Tracking UI & Habit Management (T011–T013)
+- **What was done:**
+  - **T011 (Tailwind CSS Configuration & Serene Focus Tokens di `apps/web`):**
+    * Mengonfigurasi `tailwind.config.js` dengan token desain Serene Focus dari `DESIGN_SYSTEM.md`: Primary Calm Teal (`#0D9488`), Secondary Warm Amber (`#D97706`), palet semantik kategori (Emerald, Indigo-Slate, Calm Sky, Terracotta-Rose, Olive-Bronze, Slate), status sinkronisasi, dan `tabular-nums`.
+    * Mendefinisikan CSS variables permukaan light dan dark mode (`--bg-canvas`, `--surface-tier-1`, dll.) di `apps/web/src/styles/tokens.css` dan `index.css`.
+    * Membangun modul tema reaktif (`ThemeProvider`, `useTheme`) di `apps/web/src/theme/ThemeContext.tsx` yang tersinkronisasi otomatis ke tabel `settings` di Dexie IndexedDB dan mematuhi preferensi sistem (`prefers-color-scheme: dark`).
+    * Membangun shell tata letak responsif di `apps/web/src/components/layout/AppLayout.tsx`: bilah navigasi bawah untuk mobile (< 768px, 64px `pb-safe`), bilah samping untuk desktop (>= 768px, 260px fixed width, batas kontainer 1040px), serta badge status sinkronisasi `SyncStatusBadge`.
+  - **T012 (Daily Check-in Screen `Hari Ini` di `apps/web/src/pages/DailyCheckIn.tsx`):**
+    * Membangun pemilih strip tanggal 5-hari horizontal (`DateStrip.tsx`) dengan navigasi chevron lampau/mendatang dan offset `jam_mulai_hari` (misal 04:00) dari pengaturan.
+    * Membangun ring progres melingkar SVG (`ProgressRing.tsx`) dengan persentase kelulusan hari ini dan badge momentum streak Warm Amber.
+    * Membangun kartu habit checklist (`HabitChecklistCard.tsx`) dengan single-tap toggle instan (< 50ms) ke Dexie IndexedDB dan outbox queueing.
+    * Membangun kartu habit kuantitatif (`HabitQuantitativeCard.tsx`) dengan stepper buttons (`-` dan `+`), input manual, dan auto-selesai saat nilai mencapai target.
+    * Menghubungkan kalkulasi streak dinamis pada kartu habit menggunakan mesin murni `calculateStreak` dari `@vibehabit/shared`.
+    * Menambahkan akordeon collapsible untuk kebiasaan yang tidak dijadwalkan pada hari yang dipilih.
+  - **T013 (Habit Management Screen `Kelola Habit` di `apps/web/src/pages/HabitManagement.tsx`):**
+    * Membangun daftar habit dengan pencarian teks, chip filter kategori horizontal, dan akordeon kebiasaan yang diarsipkan.
+    * Membangun modal form tambah / ubah habit (`HabitFormModal.tsx`) yang mendukung mode checklist dan kuantitatif, serta frekuensi harian, hari tertentu (Senin-Minggu), dan X kali per minggu.
+    * Menegakkan integritas historis (PRD 7.5 & 8.1): perubahan frekuensi/target kebiasaan secara otomatis membuat versi jadwal baru `HabitSchedule` dengan `effective_from = selectedDate` tanpa merusak catatan jadwal lama.
+    * Membangun modal konfirmasi hapus permanen (`DeleteConfirmationModal.tsx`) dengan rincian jumlah log dan streak yang terpengaruh, mengeksekusi `deleteHabitCascading` secara atomik di Dexie.
+  - **Pengujian & Verifikasi Komponen (`apps/web/tests/`):**
+    * Menambahkan 4 berkas pengujian baru (29 pengujian baru):
+      - `apps/web/tests/theme.test.ts`: default setting, persistensi ke Dexie, update theme, mutasi outbox.
+      - `apps/web/tests/daily-checkin.test.tsx`: date strip 5 hari, progress ring 0%/50%/100%, checklist toggle, stepper kuantitatif, update Dexie instan.
+      - `apps/web/tests/habit-management.test.tsx`: render kartu kelola, form create/edit, preservasi versi jadwal `effective_from`, dialog konfirmasi hapus, eksekusi kaskade tombstone.
+      - `apps/web/tests/layout.test.tsx`: shell navigasi desktop & mobile, badge status sinkronisasi, toggle tema.
+    * Memperbarui `vitest.config.ts` untuk menyertakan berkas `.test.{ts,tsx}`.
+- **Hasil Verifikasi Penuh (Zero Regression):**
+  * `npm test`: 409 tests lulus 100% lintas 55 test files di Vitest dengan 0 fail dan 0 flake.
+  * `npm run typecheck`: 0 error lintas seluruh workspace (`apps/web`, `apps/server`, `packages/shared`, `tests`).
+  * `npm run lint`: 0 error linting.
+  * `npm run build`: Kompilasi produksi lulus 100%.
+- **Decisions made and why:**
+  * Menggunakan inisialisasi state langsung dari props pada `HabitFormModal` untuk menjamin kompatibilitas penuh dengan static rendering dan SSR di samping client-side lifecycle.
+  * Menghubungkan seluruh mutasi form dan check-in langsung ke helper CRUD atomik Dexie (`saveHabitLog`, `saveHabit`, `saveHabitSchedule`, `deleteHabitCascading`) untuk menjaga prinsip Local-First nol-latensi dan sinkronisasi outbox otomatis.
+- **Deviation from plan (if any):** Tidak ada deviasi. Seluruh kriteria spesifikasi Milestone 4 terpenuhi 100%.
+- **Upstream doc update needed?** Tidak ada.
+
+### 2026-10-01 — Milestone 4 Hardening & Adversarial Review Verification
+- **What was fixed and hardened:**
+  - **1. Perbaikan Kritis Kebocoran Jadwal Lintas Habit (`DailyCheckIn.tsx` & `HabitManagement.tsx`):**
+    * *Akar Masalah:* `getActiveScheduleForDate(schedules, ...)` dan `calculateStreak(habit, schedules, ...)` dipanggil menggunakan array global `schedules` yang berisi seluruh jadwal dari seluruh habit di basis data. Karena `getActiveScheduleForDate` mengurutkan jadwal semata-mata berdasarkan `effective_from` tanpa memfilter `habit_id`, jadwal dari habit lain (yang memiliki `effective_from` lebih baru) menimpa jadwal habit aktif. Hal ini menyebabkan target kuantitatif salah (misal: 2000 ml terbaca sebagai 1 ml), jenis frekuensi tertukar, kalkulasi streak terkorupsi, dan form edit habit memuat jadwal habit lain.
+    * *Solusi:* Memfilter jadwal spesifik habit (`schedules.filter(s => s.habit_id === habit.id)`) sebelum memanggil `getActiveScheduleForDate` dan `calculateStreak` di seluruh komponen `DailyCheckIn`, `HabitManagement`, `HabitCard`, modal edit, dan modal hapus.
+  - **2. Pengelompokan Kategori Serene Focus (`DailyCheckIn.tsx`):**
+    * Mengimplementasikan `groupedScheduledHabits` yang mengelompokkan ritual terjadwal berdasarkan kategori dengan header kategori, dot warna semantik, dan indikator `X / Y Siap` per kategori sesuai spesifikasi PRD §6 dan acuan visual Google Stitch UI.
+  - **3. Reaktivitas LiveQuery Penuh ke Dexie (`DailyCheckIn.tsx` & `HabitManagement.tsx`):**
+    * Mengintegrasikan langganan reaktif Dexie `liveQuery` (`observeHabits`, `observeCategories`, `observeLogsForDate`, liveQuery schedules dan logs) sehingga UI otomatis bereaksi terhadap mutasi outbox, tarikan sinkronisasi latar belakang dari VPS, atau modifikasi dari tab lain tanpa bergantung pada pemuatan manual statis.
+  - **4. Integrasi Status Outbox Nyata pada Layout Shell (`App.tsx`):**
+    * Mengganti badge sync hardcoded dengan observasi dinamis `observeOutboxCount(db)` pada `App.tsx`. Ketika terdapat mutasi tertunda di IndexedDB offline, layout langsung menampilkan status `Menunggu (n)` dengan badge oranye Warm Amber secara real-time.
+  - **5. Stabilisasi Navigasi Strip Tanggal (`DateStrip.tsx`):**
+    * Mempertahankan `anchorDate` jendela 5-hari agar klik pada tanggal dalam jendela aktif tidak menyebabkan seluruh strip melompat/bergeser di bawah jari pengguna. Pergeseran strip hanya terjadi saat pengguna menggunakan chevron atau memilih tanggal di luar jendela.
+  - **6. Penyesuaian Presisi Token SVG ProgressRing (`ProgressRing.tsx`):**
+    * Memperbarui `strokeWidth` menjadi `8` (sebelumnya `6`) dan warna track latar menjadi `text-slate-200 dark:text-slate-700` (sebelumnya `text-slate-100 dark:text-slate-700/60`) agar strictly mematuhi spesifikasi `DESIGN_SYSTEM.md` §6.4.
+  - **7. Integritas Form Kategori & Pengurutan Numerik Hari (`HabitFormModal.tsx`):**
+    * Memperbaiki fallback `categoryId` agar habit tanpa kategori (`category_id === null`) tidak terpaksa menjadi kategori pertama saat diedit.
+    * Memperbaiki fungsi `toggleDay` agar pengurutan hari menggunakan pembanding numerik `(a, b) => a - b` alih-alih pengurutan leksikografis default JavaScript.
+    * Menyelaraskan tombol stepper minus dan plus pada `HabitQuantitativeCard.tsx` dengan label angka seimbang.
+  - **8. Penambahan Pengujian Komprehensif (`apps/web/tests/`):**
+    * Menambahkan pengujian isolasi jadwal multi-habit pada `daily-checkin.test.tsx` dan `habit-management.test.tsx`.
+    * Menambahkan pengujian kepatuhan token stroke SVG ProgressRing.
+    * Menambahkan pengujian integritas kategori null pada form modal.
+- **Hasil Verifikasi Penuh (Zero Regression):**
+  * `npm test`: 413 tests lulus 100% lintas 55 test files di Vitest dengan 0 fail dan 0 flake.
+  * `npm run typecheck`: 0 error lintas seluruh workspace (`@vibehabit/shared`, `@vibehabit/web`, `@vibehabit/server`, dan root `tests`).
+  * `npm run lint`: 0 error linting.
+  * `npm run build`: Kompilasi produksi lulus 100%.
+- **Decisions made and why:**
+  * Menegakkan isolasi ketat `habit_id` pada setiap evaluasi jadwal dan streak untuk menjamin integritas fungsional Local-First saat banyak habit aktif tersimpan di IndexedDB.
+- **Deviation from plan (if any):** Tidak ada deviasi.
+- **Upstream doc update needed?** Tidak ada.
+
+### 2026-10-01 — Milestone 5: Analytics Dashboard & Data Management (T014–T015)
+- **What was done:**
+  - **T014 (Analytics Dashboard Screen di `apps/web/src/pages/AnalyticsDashboard.tsx`):**
+    * Membangun pemilih rentang waktu tersegmentasi (`TimeRangeFilter.tsx`): 7 Hari, 30 Hari, 90 Hari, dan Tahun Ini dengan status tombol aktif berbasis token Serene Focus.
+    * Membangun 4 kartu ringkasan metrik KPI (`MetricSummaryCards.tsx`): Rasio Keberhasilan (%) beserta dekorasi kurva sparkline, Total Check-in Selesai dengan progress bar, Streak Terpanjang Aktif dengan badge Warm Amber 🔥, dan Habit Paling Konsisten dengan persentase kelulusan.
+    * Membangun grafik garis/area tren konsistensi interaktif murni berbasis SVG (`ConsistencyChart.tsx`): area gradient fill Calm Teal (`#0D9488`), garis horizontal pemandu, garis benchmark putus-putus rata-rata periode, titik data interaktif dengan tooltip melayang (tanggal, rasio %, jumlah selesai/terjadwal), serta label sumbu-X adaptif tanpa dependensi eksternal.
+    * Membangun peta densitas konsistensi kalender heatmap berbasis pure CSS Grid 7 kolom (`CalendarHeatmap.tsx`): header hari (Sen s.d. Min), slot offset kosong di awal minggu pertama bulan, skala 5 level warna Serene Focus (Level 0 kosong s.d. Level 4 sempurna), tooltip tanggal & jumlah selesai, styling tanggal masa depan redup, dan navigasi bulan (chevron mundur/maju).
+    * Membangun kartu ringkasan performa per kategori (`CategorySummaryCards.tsx`): dot warna semantik kategori (Emerald, Indigo, Sky, Rose, Lime, Slate), jumlah habit aktif, total check-in selesai, rasio keberhasilan kategori, dan horizontal progress bar (termasuk penanganan "Tanpa Kategori" per PRD §7.6).
+    * Membangun tabel perincian performa per habit individu (`HabitPerformanceTable.tsx`): nama habit, chip kategori, mode target (checklist vs kuantitatif), badge streak saat ini, streak terbaik historis, rasio keberhasilan dalam periode, dan rasio check-in selesai/terjadwal.
+    * Menghubungkan kalkulasi analitik cepat menggunakan fungsi domain murni `@vibehabit/shared` (`calculateStreak`, `getActiveScheduleForDate`, `isDateScheduled`, `isDaySuccessful`) dengan isolasi ketat `habit_id` dan indexing Dexie `[habit_id+tanggal]`.
+  - **T015 (Data Management & Disaster Recovery di `apps/web/src/pages/DataManagement.tsx`):**
+    * Mendefinisikan tipe domain `BackupData` dan skema validasi Zod `backupDataSchema` di `@vibehabit/shared` untuk format snapshot database resmi versi 1.
+    * Membangun modul utilitas portabilitas data di `apps/web/src/utils/exportImport.ts`:
+      - `exportDatabaseToJson`: mengunduh snapshot utuh 5 tabel domain (`categories`, `habits`, `habit_schedules`, `logs`, `settings`) dengan format terstruktur, metadata, stempel waktu, dan penyimpanan timestamp ke `localStorage`.
+      - `exportHabitsToCsv`: mengekspor data baris-kolom bersih untuk diolah secara bebas di spreadsheet / pandas.
+      - `validateBackupJson`: memvalidasi berkas JSON terhadap skema Zod dan mengekstrak ringkasan statistik (jumlah habit, log, jadwal, kategori).
+      - `importBackupData`: mengimplementasikan dua mode pemulihan bencana:
+        1. **Mode Merge LWW (Rekomendasi Aman):** Membandingkan `updated_at` via `compareLww` sehingga record lokal yang lebih baru tidak tertimpa, mendaftarkan mutasi ke outbox untuk sinkronisasi ke VPS.
+        2. **Mode Clean Restore:** Mengosongkan data lokal dan mengganti total dengan isi cadangan, mendaftarkan seluruh entitas ke outbox sebagai mutasi `insert`.
+    * Membangun modal pratinjau impor (`ImportPreviewModal.tsx`): dialog informasi nama berkas, stempel waktu, perangkat asal, badge statistik entitas, dan opsi pemilihan strategi merge LWW vs clean restore.
+    * Membangun banner peringatan keselamatan data (`BackupWarnings.tsx`) sesuai PRD §8.4 & ARCHITECTURE §9.6: peringatan visual jika sinkronisasi > 7 hari (atau belum pernah) dan jika backup terakhir > 30 hari (atau belum pernah).
+    * Membangun form konfigurasi Device Token (`DeviceTokenForm.tsx`): input Bearer token rahasia tersimpan di `localStorage` lokal untuk otentikasi aman ke endpoint sinkronisasi Fastify VPS.
+    * Membangun kontrol preferensi biologis jam mulai hari (`jam_mulai_hari`: 00:00, 03:00, 04:00, 05:00) yang tersimpan ke Dexie dan outbox.
+    * Membangun zona bahaya: pembersihan antrean outbox sementara dan reset data lokal dengan konfirmasi teks "RESET".
+    * Menghubungkan rute navigasi tab "Analitik" dan tab "Data" pada `App.tsx` dan `AppLayout.tsx`.
+  - **Pengujian Komprehensif (`apps/web/tests/`):**
+    * Menambahkan 2 berkas pengujian baru (28 pengujian baru):
+      - `apps/web/tests/analytics-dashboard.test.tsx`: segmented filter, KPI metric cards, SVG chart paths & grid, heatmap 5-level scale & weekday alignment, category cards, habit performance table, dan integrasi penuh `AnalyticsDashboard`.
+      - `apps/web/tests/data-management.test.tsx`: pembuatan JSON snapshot versi 1, pembuatan CSV, validasi Zod valid/invalid, penggabungan Merge LWW melindungi data lokal lebih baru, pemulihan Clean Restore, banner peringatan sync/backup overdue, form device token, modal pratinjau impor, dan integrasi halaman `DataManagement`.
+    * Menambahkan pengujian integrasi tab switching `Analytics` dan `Data` di `apps/web/tests/layout.test.tsx`.
+    * Menambahkan unit test validasi `backupDataSchema` di `packages/shared/tests/schemas.test.ts`.
+- **Hasil Verifikasi Penuh (Zero Regression):**
+  * `npm test`: 441 tests lulus 100% lintas 57 test files di Vitest (18s) dengan 0 fail dan 0 flake.
+  * `npm run typecheck`: 0 error lintas seluruh workspace (`@vibehabit/shared`, `@vibehabit/web`, `@vibehabit/server`, dan root `tests`).
+  * `npm run lint`: 0 error linting.
+  * `npm run build`: Kompilasi produksi lulus 100%.
+- **Decisions made and why:**
+  * Membangun grafik garis/area dan kalender heatmap menggunakan pure SVG dan CSS Grid native tanpa menambah library eksternal (menghindari peer-dependency issues React 19 dan strictly mematuhi guardrail zero unauthorized dependencies di `AGENTS.md`).
+  * Mendaftarkan seluruh entitas hasil import JSON langsung ke outbox Dexie agar sinkronisasi data ke PostgreSQL VPS berjalan otomatis dan transparan saat online.
+- **Deviation from plan (if any):** Tidak ada deviasi. Seluruh kriteria spesifikasi Milestone 5 (T014 & T015) terpenuhi 100%.
+- **Upstream doc update needed?** Tidak ada.

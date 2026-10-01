@@ -12,5 +12,5 @@ export function calculateBackoffMs(
   const maxMs = 60000;
   const expMs = Math.min(maxMs, baseMs * Math.pow(2, attempt));
   const jitter = expMs * Math.max(0, randomJitterRatio);
-  return Math.floor(expMs + jitter);
+  return Math.min(maxMs, Math.floor(expMs + jitter));
 }

@@ -1,0 +1,37 @@
+:root {
+  /* Light Theme Surfaces & Text */
+  --bg-canvas: #F8FAFC;            /* Slate 50 */
+  --surface-tier-1: #FFFFFF;       /* Card, Top Bar, Bottom Nav */
+  --surface-tier-2: #F1F5F9;       /* Inset Inputs, Segmented Controls */
+  --border-subtle: #E2E8F0;        /* Slate 200 */
+  --border-strong: #CBD5E1;        /* Slate 300 */
+  --text-main: #0F172A;            /* Slate 900 */
+  --text-secondary: #475569;       /* Slate 600 */
+  --text-muted: #64748B;           /* Slate 500 */
+}
+
+.dark {
+  /* Dark Theme Surfaces & Text */
+  --bg-canvas: #0F172A;            /* Slate 900 */
+  --surface-tier-1: #1E293B;       /* Slate 800 */
+  --surface-tier-2: #334155;       /* Slate 700 */
+  --border-subtle: #334155;        /* Slate 700 */
+  --border-strong: #475569;        /* Slate 600 */
+  --text-main: #F8FAFC;            /* Slate 50 */
+  --text-secondary: #94A3B8;       /* Slate 400 */
+  --text-muted: #64748B;           /* Slate 500 */
+}
+
+/* Tabular nums for stable number display */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Safe area padding for mobile bottom bar */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}

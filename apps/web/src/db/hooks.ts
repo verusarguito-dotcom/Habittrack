@@ -3,7 +3,9 @@ import type { VibeHabitDatabase } from './database.js';
 import type { Habit, HabitLog, HabitSchedule, Category, Setting } from '@vibehabit/shared';
 import {
   queryHabits,
+  getHabit,
   queryLogsByDate,
+  queryLogsByDateRange,
   queryLogsByHabitAndDate,
   queryHabitSchedules,
   queryCategories,
@@ -17,11 +19,26 @@ export function observeHabits(
   return liveQuery(() => queryHabits(db, includeArchived));
 }
 
+export function observeHabit(
+  db: VibeHabitDatabase,
+  habitId: string
+): Observable<Habit | undefined> {
+  return liveQuery(() => getHabit(db, habitId));
+}
+
 export function observeLogsForDate(
   db: VibeHabitDatabase,
   tanggal: string
 ): Observable<HabitLog[]> {
   return liveQuery(() => queryLogsByDate(db, tanggal));
+}
+
+export function observeLogsForDateRange(
+  db: VibeHabitDatabase,
+  startDate: string,
+  endDate: string
+): Observable<HabitLog[]> {
+  return liveQuery(() => queryLogsByDateRange(db, startDate, endDate));
 }
 
 export function observeLogsForHabitAndDate(
